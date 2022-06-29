@@ -23,17 +23,18 @@ use App\Models\Masterdata;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/dash', function () {
-    return view('index');
-});
 
 Route::get('/auth', function () {
     return view('auth.login');
 });
-Route::get('/main/showdata',  [DetaileventController::class, 'showData']);
+// Route::get('/dash',  [DetaileventController::class, 'index']);
+Route::match(['get', 'post'], '/dash',  [DetaileventController::class, 'index']);
+Route::match(['get', 'post'], '/main',  [DetaileventController::class, 'chartHarian']);
 Route::get('/main/profile', function () {
     return view('auth.profile');
 });
+
+Route::get('/chart',  [DetaileventController::class, 'tabelHarian']);
 
 // route untuk CRUD data ULP start
 Route::get('/ulp', function () {
@@ -46,11 +47,9 @@ Route::get('/ulp/edit/{id}', [UlpController::class, 'edit']);
 Route::put('/ulp/update/{id}', [UlpController::class, 'update']);
 // route untuk CRUD data ULP end
 // route untuk import file excel start
-$controller = DetaileventController::class;
-Route::post('/detailEvent/importExcel', [$controller, 'importExcel']);
-// Route::get('/detailEvent/importExcel', [$controller, 'importExcel'])->name('data.detailevent');
-Route::get('/detailEvent/harianSaidi',  [DetaileventController::class, 'harianSaidi']);
-Route::get('/detailEvent/harianSaifi',  [DetaileventController::class, 'harianSaifi']);
+Route::post('/detailEvent/importExcel', [DetaileventController::class, 'importExcel']);
+Route::get('/detailEvent/realisasi',  [DetaileventController::class, 'chartHarian']);
+Route::get('/detailEvent/releup3',  [DetaileventController::class, 'releUp3']);
 
 Route::get('/detailEvent', function () {
     $data = Detailevent::all();

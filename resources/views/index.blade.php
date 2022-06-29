@@ -2,226 +2,135 @@
 
 @section('content')
 
+    @php
+    // dd($harian);
+    $jml_hr = cal_days_in_month(CAL_GREGORIAN, $harian['bulan'], 2021); //jumlah hari perbulan
+
+    $saidi = $harian['saidi_harian'];
+    $saifi = $harian['saifi_harian'];
+    @endphp
+
     <div class="page-heading">
         <h3>Realisasi SAIDI SAIFI Harian</h3>
     </div>
     <div class="page-content">
         <section class="row">
             <div class="col-12 col-lg-9">
-                {{-- <div class="row">
-                    <div class="col-6 col-lg-3 col-md-6">
-                        <div class="card">
-                            <div class="card-body px-3 py-4-5">
+                
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="POST" action="/dash">
+                                @csrf
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <div class="stats-icon purple">
-                                            <i class="iconly-boldShow"></i>
-                                        </div>
+                                        <h6>Select Bulan</h6>
+                                        <fieldset class="form-group">
+                                            <select class="form-select" name="bulan" required>
+                                                <option disabled="disabled" selected>Pilih</option>
+                                                @for ($i = 1; $i <= 12; $i++)
+                                                    <option value="{{ $i }}">{{ $i }}
+                                                    </option>
+                                                @endfor
+                                            </select>
+                                            @error('bulan')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </fieldset>
                                     </div>
-                                    <div class="col-md-8">
-                                        <h6 class="text-muted font-semibold">Profile Views</h6>
-                                        <h6 class="font-extrabold mb-0">112.000</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-lg-3 col-md-6">
-                        <div class="card">
-                            <div class="card-body px-3 py-4-5">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="stats-icon blue">
-                                            <i class="iconly-boldProfile"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <h6 class="text-muted font-semibold">Followers</h6>
-                                        <h6 class="font-extrabold mb-0">183.000</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-lg-3 col-md-6">
-                        <div class="card">
-                            <div class="card-body px-3 py-4-5">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="stats-icon green">
-                                            <i class="iconly-boldAdd-User"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <h6 class="text-muted font-semibold">Following</h6>
-                                        <h6 class="font-extrabold mb-0">80.000</h6>
+                                    <div class="col-md-6">
+                                        <h6>Select Ulp</h6>
+                                        <fieldset class="form-group">
+                                            <select class="form-select" name="ulp" required>
+                                                <option disabled="disabled" selected>Pilih</option>
+                                                @for ($i = 0; $i < count($ulp_list); $i++)
+                                                    <option value="{{ $ulp_list[$i]->nama_ulp }}">
+                                                        {{ $ulp_list[$i]->nama_ulp }}
+                                                    </option>
+                                                @endfor
+                                                <option value="{{ $up3_name[0]->nama_ulp }}">
+                                                    {{ $up3_name[0]->nama_ulp }}
+                                                </option>
+                                            </select>
+                                            @error('ulp')
+                                                <span class="text-danger">{{ $message }}</span>
+                                                {{-- <div class="alert alert-danger">{{ $message }}</div> --}}
+                                            @enderror
+                                        </fieldset>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-lg-3 col-md-6">
-                        <div class="card">
-                            <div class="card-body px-3 py-4-5">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="stats-icon red">
-                                            <i class="iconly-boldBookmark"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <h6 class="text-muted font-semibold">Saved Post</h6>
-                                        <h6 class="font-extrabold mb-0">112</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> --}}
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4>Monitoring Realisasi SAIDI Harian</h4>
-                            </div>
-                            <div class="card-body">
-                                <div id="chart-profile-visit"></div>
-                            </div>
+                                <button class="btn btn-primary" type="submit">Refresh</button>
+                            </form>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12 col-xl-4">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4>Profile Visit</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="d-flex align-items-center">
-                                            <svg class="bi text-primary" width="32" height="32" fill="blue"
-                                                style="width:10px">
-                                                <use
-                                                    xlink:href="{{ asset('assets/vendors/bootstrap-icons/bootstrap-icons.svg#circle-fill') }}" />
-                                            </svg>
-                                            <h5 class="mb-0 ms-3">Europe</h5>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <h5 class="mb-0">862</h5>
-                                    </div>
-                                    <div class="col-12">
-                                        <div id="chart-europe"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="d-flex align-items-center">
-                                            <svg class="bi text-success" width="32" height="32" fill="blue"
-                                                style="width:10px">
-                                                <use
-                                                    xlink:href="{{ asset('assets/vendors/bootstrap-icons/bootstrap-icons.svg#circle-fill') }}" />
-                                            </svg>
-                                            <h5 class="mb-0 ms-3">America</h5>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <h5 class="mb-0">375</h5>
-                                    </div>
-                                    <div class="col-12">
-                                        <div id="chart-america"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="d-flex align-items-center">
-                                            <svg class="bi text-danger" width="32" height="32" fill="blue"
-                                                style="width:10px">
-                                                <use
-                                                    xlink:href="{{ asset('assets/vendors/bootstrap-icons/bootstrap-icons.svg#circle-fill') }}" />
-                                            </svg>
-                                            <h5 class="mb-0 ms-3">Indonesia</h5>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <h5 class="mb-0">1025</h5>
-                                    </div>
-                                    <div class="col-12">
-                                        <div id="chart-indonesia"></div>
-                                    </div>
-                                </div>
-                            </div>
+                <!-- Bootstrap Select end -->
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Monitoring Realisasi SAIDI Harian</h4>
                         </div>
-                    </div>
-                    <div class="col-12 col-xl-8">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4>Latest Comments</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-lg">
-                                        <thead>
-                                            <tr>
-                                                <th>Name</th>
-                                                <th>Comment</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td class="col-3">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="avatar avatar-md">
-                                                            <img src="{{ asset('assets/images/faces/5.jpg') }}">
-                                                        </div>
-                                                        <p class="font-bold ms-3 mb-0">Si Cantik</p>
-                                                    </div>
-                                                </td>
-                                                <td class="col-auto">
-                                                    <p class=" mb-0">Congratulations on your graduation!</p>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="col-3">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="avatar avatar-md">
-                                                            <img src="{{ asset('assets/images/faces/2.jpg') }}">
-                                                        </div>
-                                                        <p class="font-bold ms-3 mb-0">Si Ganteng</p>
-                                                    </div>
-                                                </td>
-                                                <td class="col-auto">
-                                                    <p class=" mb-0">Wow amazing design! Can you make another
-                                                        tutorial for
-                                                        this design?</p>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                        <div class="card-body">
+                            <figure class="highcharts-figure">
+                                <div id="saidi"></div>
+
+                            </figure>
                         </div>
                     </div>
                 </div>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Monitoring Realisasi SAIFI Harian</h4>
+                        </div>
+                        <div class="card-body">
+                            <figure class="highcharts-figure">
+                                <div id="saifi"></div>
+
+                            </figure>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div class="col-12 col-lg-3">
-                <div class="card">
-                    <div class="card-body py-4 px-5">
-                        <div class="d-flex align-items-center">
-                            <div class="avatar avatar-xl">
-                                <img src="{{ asset('assets/images/faces/1.jpg') }}" alt="Face 1">
-                            </div>
-                            <div class="ms-3 name">
-                                <h5 class="font-bold">John Duck</h5>
-                                <h6 class="text-muted mb-0">@johnducky</h6>
+
+                <div class="dropdown">
+                    <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="card">
+                            <div class="card-body py-4 px-6">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar avatar-xl">
+                                        <img src="{{ asset('assets/images/faces/8.jpg') }}" alt="Face 1">
+                                    </div>
+                                    <div class="ms-3 name">
+                                        <h5 class="font-bold">Danish Zahir</h5>
+                                        <h6 class="text-muted mb-0">@zahirdanish</h6>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                        <li>
+                            <h6 class="dropdown-header">Hello, John!</h6>
+                        </li>
+                        <li><a class="dropdown-item" href="{{ url('/main/profile') }}"><i
+                                    class="icon-mid bi bi-person me-2"></i> My
+                                Profile</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="icon-mid bi bi-wallet me-2"></i> User Control</a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li><a class="dropdown-item" href="#"><i class="icon-mid bi bi-box-arrow-left me-2"></i>
+                                Logout</a></li>
+                    </ul>
                 </div>
                 <div class="card">
                     <div class="card-header">
-                        <h4>Recent Messages</h4>
+                        <h4>Petugas Operator</h4>
                     </div>
                     <div class="card-content pb-4">
                         <div class="recent-message d-flex px-4 py-3">
@@ -230,7 +139,7 @@
                             </div>
                             <div class="name ms-4">
                                 <h5 class="mb-1">Hank Schrader</h5>
-                                <h6 class="text-muted mb-0">@johnducky</h6>
+                                <h6 class="text-muted mb-0">@schraderhank</h6>
                             </div>
                         </div>
                         <div class="recent-message d-flex px-4 py-3">
@@ -247,25 +156,256 @@
                                 <img src="{{ asset('assets/images/faces/1.jpg') }}">
                             </div>
                             <div class="name ms-4">
-                                <h5 class="mb-1">John Dodol</h5>
-                                <h6 class="text-muted mb-0">@dodoljohn</h6>
+                                <h5 class="mb-1">John Duck</h5>
+                                <h6 class="text-muted mb-0">@johnducky</h6>
                             </div>
                         </div>
-                        <div class="px-4">
+                        <div class="recent-message d-flex px-4 py-3">
+                            <div class="avatar avatar-lg">
+                                <img src="{{ asset('assets/images/faces/8.jpg') }}">
+                            </div>
+                            <div class="name ms-4">
+                                <h5 class="mb-1">Danish Zahir</h5>
+                                <h6 class="text-muted mb-0">@zahirdanish</h6>
+                            </div>
+                        </div>
+                        {{-- <div class="px-4">
                             <button class='btn btn-block btn-xl btn-light-primary font-bold mt-3'>Start
                                 Conversation</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Visitors Profile</h4>
-                    </div>
-                    <div class="card-body">
-                        <div id="chart-visitors-profile"></div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
+
         </section>
     </div>
+
+    <script>
+        Highcharts.chart('saidi', {
+            chart: {
+                zoomType: 'xy'
+            },
+            title: {
+                text: 'Monitoring Realisasi SAIDI Harian'
+            },
+            subtitle: {
+                text: 'Source: {{ $nama_ulp }}'
+            },
+            xAxis: [{
+                categories: [
+                    @for ($hari = 1; $hari <= $jml_hr; $hari++)
+                        {{ $hari }},
+                    @endfor
+                ],
+                crosshair: true
+            }],
+            yAxis: [{ // Primary yAxis
+                labels: {
+                    format: '{value}',
+                    style: {
+                        color: Highcharts.getOptions().colors[1]
+                    }
+                },
+                title: {
+                    text: 'Realisasi',
+                    style: {
+                        color: Highcharts.getOptions().colors[1]
+                    }
+                }
+            }, { // Secondary yAxis
+                title: {
+                    text: 'Target',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                },
+                labels: {
+                    format: '{value}',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                },
+                opposite: true
+            }],
+            tooltip: {
+                shared: true
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'left',
+                x: 120,
+                verticalAlign: 'top',
+                y: 100,
+                floating: true,
+                backgroundColor: Highcharts.defaultOptions.legend
+                    .backgroundColor ||
+                    // theme
+                    'rgba(255,255,255,0.25)'
+            },
+            series: [{
+                name: 'Realisasi Harian SAIDI',
+                type: 'column',
+                yAxis: 1,
+                data: [
+                    @for ($hari = 1; $hari <= $jml_hr; $hari++)
+                        {{ $realisasi['harian_saidi'][$hari] }},
+                    @endfor
+                ],
+                tooltip: {
+                    valueSuffix: ' '
+                }
+
+            }, {
+                name: 'Realisasi Kumulatif',
+                type: 'column',
+                yAxis: 1,
+                data: [
+                    @for ($hari = 1; $hari <= $jml_hr; $hari++)
+                        {{ $realisasi['relekum_saidi'][$hari] }},
+                    @endfor
+                ],
+                tooltip: {
+                    valueSuffix: ' '
+                }
+
+            }, {
+                name: 'Target Kumulatif',
+                type: 'spline',
+                data: [
+                    @for ($hari = 1; $hari <= count($target['target_saidi']['target_kum']); $hari++)
+                        {{ $target['target_saidi']['target_kum'][$hari] }},
+                    @endfor
+                ],
+                tooltip: {
+                    valueSuffix: ''
+                }
+            }, {
+                name: 'Target Harian',
+                type: 'spline',
+                data: [
+                    @for ($hari = 1; $hari <= count($target['target_saidi']['target_harian']); $hari++)
+                        {{ $target['target_saidi']['target_harian'][$hari] }},
+                    @endfor
+                ],
+                tooltip: {
+                    valueSuffix: ''
+                }
+            }]
+        });
+
+    </script>
+    <script>
+        Highcharts.chart('saifi', {
+            chart: {
+                zoomType: 'xy'
+            },
+            title: {
+                text: 'Monitoring Realisasi SAIFI Harian'
+            },
+            subtitle: {
+                text: "Source: {{ $nama_ulp }}"
+            },
+            xAxis: [{
+                categories: [
+                    @for ($hari = 1; $hari <= $jml_hr; $hari++)
+                        {{ $hari }},
+                    @endfor
+                ],
+                crosshair: true
+            }],
+            yAxis: [{ // Primary yAxis
+                labels: {
+                    format: '{value}',
+                    style: {
+                        color: Highcharts.getOptions().colors[1]
+                    }
+                },
+                title: {
+                    text: 'Realisasi',
+                    style: {
+                        color: Highcharts.getOptions().colors[1]
+                    }
+                }
+            }, { // Secondary yAxis
+                title: {
+                    text: 'Target',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                },
+                labels: {
+                    format: '{value}',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                },
+                opposite: true
+            }],
+            tooltip: {
+                shared: true
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'left',
+                x: 120,
+                verticalAlign: 'top',
+                y: 100,
+                floating: true,
+                backgroundColor: Highcharts.defaultOptions.legend
+                    .backgroundColor ||
+                    // theme
+                    'rgba(255,255,255,0.25)'
+            },
+            series: [{
+                name: 'Realisasi Harian SAIFI',
+                type: 'column',
+                yAxis: 1,
+                data: [
+                    @for ($hari = 1; $hari <= $jml_hr; $hari++)
+                        {{ $realisasi['harian_saifi'][$hari] }},
+                    @endfor
+                ],
+                tooltip: {
+                    valueSuffix: ' '
+                }
+
+            }, {
+                name: 'Realisasi Kumulatif',
+                type: 'column',
+                yAxis: 1,
+                data: [
+                    @for ($hari = 1; $hari <= $jml_hr; $hari++)
+                        {{ $realisasi['relekum_saifi'][$hari] }},
+                    @endfor
+                ],
+                tooltip: {
+                    valueSuffix: ' '
+                }
+
+            }, {
+                name: 'Target Kumulatif',
+                type: 'spline',
+                data: [
+                    @for ($hari = 1; $hari <= count($target['target_saifi']['target_kum']); $hari++)
+                        {{ $target['target_saifi']['target_kum'][$hari] }},
+                    @endfor
+                ],
+                tooltip: {
+                    valueSuffix: ''
+                }
+            }, {
+                name: 'Target Harian',
+                type: 'spline',
+                data: [
+                    @for ($hari = 1; $hari <= count($target['target_saifi']['target_harian']); $hari++)
+                        {{ $target['target_saifi']['target_harian'][$hari] }},
+                    @endfor
+                ],
+                tooltip: {
+                    valueSuffix: ''
+                }
+            }]
+        });
+
+    </script>
 @endsection
