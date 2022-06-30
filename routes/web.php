@@ -30,6 +30,7 @@ Route::get('/auth', function () {
 // Route::get('/dash',  [DetaileventController::class, 'index']);
 Route::match(['get', 'post'], '/dash',  [DetaileventController::class, 'index']);
 Route::match(['get', 'post'], '/main',  [DetaileventController::class, 'chartHarian']);
+Route::match(['get', 'post'], '/rank',  [DetaileventController::class, 'rankSaidi']);
 Route::get('/main/profile', function () {
     return view('auth.profile');
 });

@@ -387,6 +387,20 @@ class DetaileventController extends Controller
         return $realisasi;
     }
 
+
+    public function rankSaidi($ulp = '', $bln = 10)
+    {
+        if ($ulp == "") {
+            $query = DB::select("SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM detailevents WHERE month(tgl_nyala)={$bln} group by penyulang ORDER BY `ranksaidi` DESC");
+        } else {
+            $query = DB::select("SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM detailevents WHERE month(tgl_nyala)={$bln} AND ulp={$ulp} group by penyulang ORDER BY `ranksaidi` DESC");
+        }
+
+
+        // dd($query);
+        return view('data.rank', compact('query'));
+    }
+
     /**
      * Store a newly created resource in storage.
      *
