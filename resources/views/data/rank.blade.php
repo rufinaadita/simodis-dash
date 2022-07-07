@@ -12,12 +12,23 @@
 
         <section class="section">
             <div class="row">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title">Rank SAIDI per Penyulang</h4>
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div id="rank"></div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <div id="rank"></div>
+                </div>
+            </div>
+        </section>
+        <section class="section">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div id="kum-gangguan"></div>
+                            <div id="fgtm"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -32,10 +43,10 @@
                 width: 1400
             },
             title: {
-                text: 'Monthly Average Rainfall'
+                text: 'Realisasi SAIDI Perpenyulang'
             },
             subtitle: {
-                text: 'Source: WorldClimate.com'
+                text: ''
             },
             xAxis: {
                 categories: [
@@ -54,7 +65,7 @@
             yAxis: {
                 min: 0,
                 title: {
-                    text: 'Rank'
+                    text: ''
                 }
             },
             tooltip: {
@@ -72,10 +83,105 @@
                 }
             },
             series: [{
-                name: 'Rank SAIDI Ulp',
+                name: 'Rank SAIDI',
                 data: [
                     @foreach ($query as $value)
                         {{ $value->ranksaidi }},
+                    @endforeach
+                ]
+
+            }]
+        });
+
+    </script>
+    <script>
+        Highcharts.chart('kum-gangguan', {
+            title: {
+                text: 'Komulatif Gangguan Bulanan'
+            },
+            xAxis: {
+                categories: [
+                    @foreach ($kum_gangguan as $value)
+                        '{{ $value->rayon }}',
+                    @endforeach
+                ]
+            },
+            series: [{
+                type: 'column',
+                name: 'Jumlah Gangguan',
+                data: [
+                    {{ $n_gangguan }}
+                ]
+            }]
+        }, function(chart) {
+            var text = chart.renderer.text(
+                    'Total Gangguan : {{ $total_gangguan }}',
+                    1000,
+                    100
+                ).attr({
+                    zIndex: 5
+                }).add(),
+                textBox = text.getBBox();
+
+            console.log(typeof chart.renderer);
+
+            chart.renderer.rect(textBox.x - 10, textBox.y - 5, textBox.width + 20, textBox.height + 10, 2)
+                .attr({
+                    fill: '#BADA55',
+                    stroke: 'black',
+                    'stroke-width': 1,
+                    zIndex: 4
+                })
+                .add();
+        });
+
+    </script>
+    <script>
+        Highcharts.chart('fgtm', {
+            chart: {
+                type: 'column',
+                width: 1200
+            },
+            title: {
+                text: 'FGTM MoM UP3 PEKANBARU'
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                categories: [
+                    @foreach ($fgtm as $value)
+                        '{{ $value->bulan }}',
+                    @endforeach
+                ],
+                crosshair: true
+
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: ''
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: 'Jumlah Gangguan',
+                data: [
+                    @foreach ($fgtm as $value)
+                        {{ $value->jml_gangguan }},
                     @endforeach
                 ]
 

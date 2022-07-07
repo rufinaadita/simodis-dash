@@ -10,7 +10,9 @@ use App\Models\Ulp;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Expr\Isset_;
 use Session;
+
 
 class DetaileventController extends Controller
 {
@@ -95,16 +97,9 @@ class DetaileventController extends Controller
         // notifikasi dengan session
         $datas = Ulp::all();
         if (empty($datas[0])) {
-            // return redirect()->route('data.detailevent')
-            //     ->with('status', 'ERROR! Database ulp is null')
-            //     ->with('class', 'danger');
-            // return back()->withError('ERROR! Database ulp is null');
             return back()->with('Error', 'ERROR! Database ulp is null');
         } else {
             // alihkan halaman kembali
-            // return back()
-            //     ->with('status', 'Excel file imported successfully!')
-            //     ->with('class', 'success');
             return back()->with('Status', 'Excel file imported successfully');
         }
     }
@@ -387,18 +382,45 @@ class DetaileventController extends Controller
         return $realisasi;
     }
 
-
     public function rankSaidi($ulp = '', $bln = 10)
     {
+
+        $fgtm = DB::select("SELECT month(tgl_nyala) as bulan,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata GROUP BY month(tgl_nyala) ORDER BY month(tgl_nyala) ASC");
+        $kum_gangguan = DB::select("SELECT rayon,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata WHERE month(tgl_nyala)={$bln} GROUP BY rayon ORDER BY jml_gangguan DESC");
+
         if ($ulp == "") {
             $query = DB::select("SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM detailevents WHERE month(tgl_nyala)={$bln} group by penyulang ORDER BY `ranksaidi` DESC");
         } else {
             $query = DB::select("SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM detailevents WHERE month(tgl_nyala)={$bln} AND ulp={$ulp} group by penyulang ORDER BY `ranksaidi` DESC");
         }
+        $n_gangguan = "";
+        $total_gangguan = 0;
+        foreach ($kum_gangguan as $value) {
+            $n_gangguan .= $value->jml_gangguan . ',';
+            $total_gangguan += $value->jml_gangguan;
+        }
 
+        // dd($fgtm);
+        return view('data.rank', compact('query', 'kum_gangguan', 'fgtm', 'n_gangguan', 'total_gangguan'));
+    }
 
-        // dd($query);
-        return view('data.rank', compact('query'));
+    public function penyulang($bln = 10)
+    {
+
+        $query = DB::table('detailevents')->select('penyulang')->groupBy('penyulang')->get();
+        $penyulang = json_decode($query);
+        $rank = [];
+        foreach ($query as $key => $value) {
+            $n_rank = $this->rankSaidi($value->penyulang, $bln);
+            if ($n_rank == "") {
+                $rank[$value->penyulang . ''] = 0;
+            } else {
+                $rank[$value->penyulang . ''] = $this->rankSaidi($value->penyulang, $bln);
+            }
+        }
+
+        // dd($fgtm);
+        return view('data.rank', compact('rank', 'penyulang', 'query'));
     }
 
     /**
