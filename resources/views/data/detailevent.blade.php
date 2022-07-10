@@ -2,6 +2,18 @@
 
 @section('content')
 
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible show fade" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @elseif (session('error'))
+        <div class="alert alert-danger alert-dismissible show fade" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
     <!-- Basic File Browser start -->
     <section id="input-file-browser">
         <div class="row">
@@ -12,17 +24,6 @@
                     </div>
 
                     <div class="card-body">
-                        @if (session('status'))
-                            <div class="alert alert-success alert-dismissible show fade" role="alert">
-                                {{ session('status') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        @elseif (session('error'))
-                            <div class="alert alert-danger alert-dismissible show fade" role="alert">
-                                {{ session('error') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        @endif
                         <div class="row">
                             {{-- detail event file import --}}
                             <div class="col-lg-6 col-md-12">
@@ -70,10 +71,18 @@
         </div>
         <section class="section">
             <div class="card">
+
                 <div class="card-header">
-                    Datatable Detail Events
+                    Datatable
                 </div>
+
                 <div class="card-body">
+                    <form action="{{ url('/truncate/detailevent') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-danger mb-2"
+                            onclick="return confirm('Are you sure to truncate this table?')">Truncate Table</button>
+                    </form>
+                    {{-- <a href="" class="btn btn-danger mb-2">Truncate Table</a> --}}
                     <table class="table table-striped" id="table1">
                         <thead>
                             <tr>

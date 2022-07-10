@@ -2,19 +2,24 @@
 
 @section('content')
     {{-- notifikasi form validasi --}}
-    {{-- @if ($errors->has('file'))
+    @if ($errors->has('file'))
         <span class="invalid-feedback" role="alert">
             <strong>{{ $errors->first('file') }}</strong>
         </span>
-    @endif --}}
+    @endif
 
     {{-- notifikasi sukses --}}
-    {{-- @if ($sukses = Session::get('sukses'))
-        <div class="alert alert-success alert-block">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            <strong>{{ $sukses }}</strong>
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible show fade" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-    @endif --}}
+    @elseif (session('error'))
+        <div class="alert alert-danger alert-dismissible show fade" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
     <!-- Basic File Browser start -->
     <section id="input-file-browser">
@@ -26,12 +31,6 @@
                     </div>
 
                     <div class="card-body">
-                        @if (session('status'))
-                            <div class="alert alert-success alert-dismissible show fade" role="alert">
-                                {{ session('status') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        @endif
                         <div class="row">
                             {{-- detail event file import --}}
                             <div class="col-lg-6 col-md-12">
@@ -82,9 +81,14 @@
         <section class="section">
             <div class="card">
                 <div class="card-header">
-                    Simple Datatable
+                    Datatable
                 </div>
                 <div class="card-body">
+                    <form action="{{ url('/truncate/masterdata') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-danger mb-2"
+                            onclick="return confirm('Are you sure to truncate this table?')">Truncate Table</button>
+                    </form>
                     <table class="table table-striped" id="table1">
                         <thead>
                             <tr>

@@ -11,19 +11,19 @@
     @endphp
 
     <div class="page-heading">
-        <h3>Realisasi SAIDI SAIFI Harian</h3>
+        <h3>Dashboard</h3>
     </div>
+
     <div class="page-content">
         <section class="row">
-            <div class="col-12 col-lg-9">
-                
+            <div class="col-12">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <form method="POST" action="/dash">
+                            <form method="POST" action="{{ url('/dash') }}">
                                 @csrf
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-2">
                                         <h6>Select Bulan</h6>
                                         <fieldset class="form-group">
                                             <select class="form-select" name="bulan" required>
@@ -58,8 +58,10 @@
                                             @enderror
                                         </fieldset>
                                     </div>
+                                    <div class="col-4 mt-4">
+                                        <button class="btn btn-primary" type="submit">Refresh</button>
+                                    </div>
                                 </div>
-                                <button class="btn btn-primary" type="submit">Refresh</button>
                             </form>
                         </div>
                     </div>
@@ -68,12 +70,11 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Monitoring Realisasi SAIDI Harian</h4>
+                            {{-- <h4>Monitoring Realisasi SAIDI Harian</h4> --}}
                         </div>
                         <div class="card-body">
                             <figure class="highcharts-figure">
                                 <div id="saidi"></div>
-
                             </figure>
                         </div>
                     </div>
@@ -81,102 +82,16 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Monitoring Realisasi SAIFI Harian</h4>
+                            {{-- <h4>Monitoring Realisasi SAIFI Harian</h4> --}}
                         </div>
                         <div class="card-body">
                             <figure class="highcharts-figure">
                                 <div id="saifi"></div>
-
                             </figure>
                         </div>
                     </div>
                 </div>
-
             </div>
-            <div class="col-12 col-lg-3">
-
-                <div class="dropdown">
-                    <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                        <div class="card">
-                            <div class="card-body py-4 px-6">
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar avatar-xl">
-                                        <img src="{{ asset('assets/images/faces/8.jpg') }}" alt="Face 1">
-                                    </div>
-                                    <div class="ms-3 name">
-                                        <h5 class="font-bold">Danish Zahir</h5>
-                                        <h6 class="text-muted mb-0">@zahirdanish</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                        <li>
-                            <h6 class="dropdown-header">Hello, John!</h6>
-                        </li>
-                        <li><a class="dropdown-item" href="{{ url('/main/profile') }}"><i
-                                    class="icon-mid bi bi-person me-2"></i> My
-                                Profile</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="icon-mid bi bi-wallet me-2"></i> User Control</a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        <li><a class="dropdown-item" href="#"><i class="icon-mid bi bi-box-arrow-left me-2"></i>
-                                Logout</a></li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Petugas Operator</h4>
-                    </div>
-                    <div class="card-content pb-4">
-                        <div class="recent-message d-flex px-4 py-3">
-                            <div class="avatar avatar-lg">
-                                <img src="{{ asset('assets/images/faces/4.jpg') }}">
-                            </div>
-                            <div class="name ms-4">
-                                <h5 class="mb-1">Hank Schrader</h5>
-                                <h6 class="text-muted mb-0">@schraderhank</h6>
-                            </div>
-                        </div>
-                        <div class="recent-message d-flex px-4 py-3">
-                            <div class="avatar avatar-lg">
-                                <img src="{{ asset('assets/images/faces/5.jpg') }}">
-                            </div>
-                            <div class="name ms-4">
-                                <h5 class="mb-1">Dean Winchester</h5>
-                                <h6 class="text-muted mb-0">@imdean</h6>
-                            </div>
-                        </div>
-                        <div class="recent-message d-flex px-4 py-3">
-                            <div class="avatar avatar-lg">
-                                <img src="{{ asset('assets/images/faces/1.jpg') }}">
-                            </div>
-                            <div class="name ms-4">
-                                <h5 class="mb-1">John Duck</h5>
-                                <h6 class="text-muted mb-0">@johnducky</h6>
-                            </div>
-                        </div>
-                        <div class="recent-message d-flex px-4 py-3">
-                            <div class="avatar avatar-lg">
-                                <img src="{{ asset('assets/images/faces/8.jpg') }}">
-                            </div>
-                            <div class="name ms-4">
-                                <h5 class="mb-1">Danish Zahir</h5>
-                                <h6 class="text-muted mb-0">@zahirdanish</h6>
-                            </div>
-                        </div>
-                        {{-- <div class="px-4">
-                            <button class='btn btn-block btn-xl btn-light-primary font-bold mt-3'>Start
-                                Conversation</button>
-                        </div> --}}
-                    </div>
-                </div>
-            </div>
-
         </section>
     </div>
 

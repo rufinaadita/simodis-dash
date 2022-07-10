@@ -23,16 +23,23 @@ use App\Models\Masterdata;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('/auth', function () {
-    return view('auth.login');
+Route::prefix('/auth')->group(function () {
+    Route::get('/login', function () {
+        return view('user.login');
+    });
 });
+
+Route::prefix('/user')->group(function () {
+    Route::get('/profile', function () {
+        return view('user.profile');
+    });
+});
+
 // Route::get('/dash',  [DetaileventController::class, 'index']);
 Route::match(['get', 'post'], '/dash',  [DetaileventController::class, 'index']);
-Route::match(['get', 'post'], '/main',  [DetaileventController::class, 'chartHarian']);
-Route::match(['get', 'post'], '/rank',  [DetaileventController::class, 'rankSaidi']);
-Route::get('/main/profile', function () {
-    return view('auth.profile');
+Route::prefix('/main')->group(function () {
+    Route::match(['get', 'post'], '/realisasi',  [DetaileventController::class, 'chartHarian']);
+    Route::match(['get', 'post'], '/rank',  [DetaileventController::class, 'rankSaidi']);
 });
 
 Route::get('/chart',  [DetaileventController::class, 'tabelHarian']);
@@ -63,3 +70,7 @@ Route::get('/masterdata', function () {
 });
 Route::post('/masterdata/importExcel', [MasterdataController::class, 'importExcel']);
 // route untuk import file excel end
+Route::prefix('/truncate')->group(function () {
+    Route::post('/detailevent', [DetaileventController::class, 'truncate']);
+    Route::post('/masterdata', [MasterdataController::class, 'truncate']);
+});

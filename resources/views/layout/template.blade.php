@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{{ asset('assets/images/logo/favicon.ico') }}">
-    <title>SI MODIS - Admin</title>
+    <title>Admin - SI MODIS</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -29,33 +29,50 @@
 
 </head>
 
+<script>
+    $('#sidebar-menu .menu a').on('click', function() {
+        $('#sidebar-menu .menu').find('li.active').removeClass('active');
+        $(this).parent('li').addClass('active');
+    });
+
+</script>
+
 <body>
     <div id="app">
         <div id="sidebar" class="active">
             <div class="sidebar-wrapper active">
                 <div class="sidebar-header">
                     <div class="d-flex justify-content-between">
-                        <div class="logo">
-                            {{-- <a href="#"><img src="{{ asset('assets/images/logo/logo.png') }}" alt="Logo"
-                                    srcset=""></a> --}}
-                        </div>
+                        {{-- <div class="logo">
+                            <a href="#"><img src="{{ asset('assets/images/logo/logo.png') }}" alt="Logo"
+                                    srcset=""></a>
+                        </div> --}}
                         <div class="toggler">
                             <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
                         </div>
                     </div>
+                    <div class="d-flex align-items-center">
+                        <div class="avatar avatar-xl">
+                            <img src="{{ asset('assets/images/faces/1.jpg') }}" alt="Face 1">
+                        </div>
+                        <div class="ms-3 name">
+                            <h5 class="font-bold">Danish Zahir</h5>
+                            <p class="mb-0 text-sm text-gray-600">Administrator</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="sidebar-menu">
+                <div class="sidebar-menu" id="sidebar-menu">
                     <ul class="menu">
                         <li class="sidebar-title">Menu</li>
 
-                        <li class="sidebar-item  ">
+                        <li class="sidebar-item active" id="sidebar-dash">
                             <a href="{{ url('/dash') }}" class='sidebar-link'>
                                 <i class="bi bi-grid-fill"></i>
                                 <span>Dashboard</span>
                             </a>
                         </li>
 
-                        <li class="sidebar-item  has-sub">
+                        <li class="sidebar-item  has-sub" id="sidebar-data">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-stack"></i>
                                 <span>Data</span>
@@ -75,11 +92,29 @@
                                 </li> --}}
                             </ul>
                         </li>
-
-                        <li class="sidebar-item ">
+                        {{-- <li class="sidebar-item " id="sidebar-tabel">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-grid-1x2-fill"></i>
-                                <span>SAIDI SAIFI Harian</span>
+                                <span>Tabel Harian</span>
+                            </a>
+                        </li> --}}
+                        {{-- <li class="sidebar-item " id="sidebar-tabel">
+                            <a href="{{ url('/dash/rank') }}" class='sidebar-link'>
+                                <i class="bi bi-bar-chart-fill"></i>
+                                <span>Grafik Gangguan</span>
+                            </a>
+                        </li> --}}
+                        <li class="sidebar-title">Other</li>
+                        <li class="sidebar-item " id="sidebar-tabel">
+                            <a class='sidebar-link' href="{{ url('/user/profile') }}">
+                                <i class="bi bi-person"></i>
+                                <span> My Profile</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item " id="sidebar-tabel">
+                            <a href="#" class='sidebar-link'>
+                                <i class="bi bi-box-arrow-left"></i>
+                                <span>Logout</span>
                             </a>
                         </li>
 
@@ -110,6 +145,7 @@
             </footer>
         </div>
     </div>
+
     <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
 
@@ -126,9 +162,9 @@
         let dataTable = new simpleDatatables.DataTable(table2);
 
     </script>
-    <script src="{{ asset('assets/vendors/apexcharts/apexcharts.js') }}"></script>
     <script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script>
+
 
 </body>
 

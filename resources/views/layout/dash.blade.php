@@ -29,24 +29,27 @@
 </head>
 
 <body>
-    {{-- <nav class="navbar navbar-light">
-        <div class="container d-block">
-            <a href="index.html"><i class="bi bi-chevron-left"></i></a>
-            <a class="navbar-brand ms-4" href="index.html">
-                <img src="assets/images/logo/logo.png">
-            </a>
-        </div>
-    </nav> --}}
-
     <nav class="navbar navbar-expand navbar-light ">
         <div class="container-fluid">
-            <a href="{{ url('/main/showdata') }}"><i class="bi bi-chevron-left"></i></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar"
+                aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+
+            <div class="collapse navbar-collapse" id="navbar">
+                <a href="{{ url()->previous() }}"><i class="bi bi-chevron-left"></i></a>
+                <a class="navbar-brand ms-4 text-gray-800" href="#" style="font-size: 2rem">SI
+                    MODIS</a>
+
+                <ul class="nav navbar-nav ms-4">
+                    <li class="nav-item">
+                        <a class="nav-link " aria-current=" page" href="{{ url('/main/realisasi') }}">Realisasi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('/main/rank') }}">Rank</a>
+                    </li>
+                </ul>
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item dropdown me-1">
                         <a class="nav-link active dropdown-toggle" href="#" data-bs-toggle="dropdown"
@@ -78,7 +81,7 @@
                         <div class="user-menu d-flex">
                             <div class="user-name text-end me-3">
                                 <h6 class="mb-0 text-gray-600">John Ducky</h6>
-                                <p class="mb-0 text-sm text-gray-600">Administrator</p>
+                                <p class="mb-0 text-sm text-gray-600">Supervisor</p>
                             </div>
                             <div class="user-img d-flex align-items-center">
                                 <div class="avatar avatar-md">
@@ -89,15 +92,15 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                         <li>
-                            <h6 class="dropdown-header">Hello, John!</h6>
+                            <h6 class="dropdown-header">Welcome, John!</h6>
                         </li>
-                        <li><a class="dropdown-item" href="{{ url('/main/profile') }}"><i
+                        <li><a class="dropdown-item" href="{{ url('/user/profile') }}"><i
                                     class="icon-mid bi bi-person me-2"></i> My
                                 Profile</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="icon-mid bi bi-gear me-2"></i>
-                                Administrator</a></li>
+                        {{-- <li><a class="dropdown-item" href="#"><i class="icon-mid bi bi-gear me-2"></i>
+                                Administrator</a></li> --}}
                         {{-- <li><a class="dropdown-item" href="#"><i class="icon-mid bi bi-wallet me-2"></i>
-                                Wallet</a></li> --}}
+                                        Wallet</a></li> --}}
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -110,7 +113,9 @@
         </div>
     </nav>
 
-    @yield('content')
+    <div id="main-content">
+
+        @yield('content')
 
     </div>
 
@@ -124,11 +129,7 @@
         let dataTable = new simpleDatatables.DataTable(table1);
 
     </script>
-    <script src="{{ asset('assets/vendors/apexcharts/apexcharts.js') }}"></script>
     <script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>
-    <!-- Include Choices JavaScript -->
-    <script src="{{ asset('assets/vendors/choices.js/choices.min.js') }}"></script>
-
     <script src="{{ asset('assets/js/main.js') }}"></script>
 </body>
 

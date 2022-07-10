@@ -6,6 +6,7 @@ use App\Models\Masterdata;
 use Illuminate\Http\Request;
 use App\Imports\MasterdataImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
 
 class MasterdataController extends Controller
 {
@@ -107,5 +108,12 @@ class MasterdataController extends Controller
     public function destroy(Masterdata $masterdata)
     {
         //
+    }
+
+    public function truncate()
+    {
+        $truncate = DB::table('masterdata')->truncate();
+
+        return back()->with('success', 'Tabel berhasil dibersihkan!');
     }
 }

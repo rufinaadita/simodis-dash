@@ -23,10 +23,16 @@
         </section>
         <section class="section">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-8">
                     <div class="card">
                         <div class="card-body">
                             <div id="kum-gangguan"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
                             <div id="fgtm"></div>
                         </div>
                     </div>
@@ -39,8 +45,7 @@
     <script>
         Highcharts.chart('rank', {
             chart: {
-                type: 'column',
-                width: 1400
+                type: 'column'
             },
             title: {
                 text: 'Realisasi SAIDI Perpenyulang'
@@ -139,8 +144,7 @@
     <script>
         Highcharts.chart('fgtm', {
             chart: {
-                type: 'column',
-                width: 1200
+                type: 'column'
             },
             title: {
                 text: 'FGTM MoM UP3 PEKANBARU'

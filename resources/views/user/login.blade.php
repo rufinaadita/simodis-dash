@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Login - SI-MODIS</title>
+    <title>Login - SI MODIS</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" href="{{ asset('assets/images/logo/favicon.ico') }}">
@@ -12,8 +12,6 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <link rel="stylesheet" href="{{ asset('assets/login/css/style.css') }}">
-
-
 </head>
 
 <body>
@@ -21,7 +19,7 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-6 text-center mb-5">
-                    <!-- <h2 class="heading-section">Login #07</h2> -->
+                    {{-- <h2 class="heading-section">SI MODIS</h2> --}}
                 </div>
             </div>
             <div class="row justify-content-center">
@@ -29,7 +27,7 @@
                     <div class="wrap d-md-flex">
                         <div class="text-wrap p-4 p-lg-5 text-center d-flex align-items-center order-md-last">
                             <div class="text w-100">
-                                <h2>Welcome to login</h2>
+                                <h2>Welcome to SIMODIS</h2>
                                 <p>Don't have an account?</p>
                                 <a href="#" class="btn btn-white btn-outline-white">Sign Up</a>
                             </div>
@@ -50,14 +48,17 @@
                                     </p>
                                 </div>
                             </div>
-                            <form action="#" class="signin-form">
+                            <form class="signin-form" action="/auth/login" method="POST">
+                                @csrf
                                 <div class="form-group mb-3">
                                     <label class="label" for="name">Username</label>
-                                    <input type="text" class="form-control" placeholder="Username" required>
+                                    <input type="text" class="form-control" placeholder="Username" name="username"
+                                        required autofocus>
                                 </div>
                                 <div class="form-group mb-3">
                                     <label class="label" for="password">Password</label>
-                                    <input type="password" class="form-control" placeholder="Password" required>
+                                    <input type="password" class="form-control" placeholder="Password" name="pass"
+                                        required>
                                 </div>
                                 <div class="form-group">
                                     <button type="submit" class="form-control btn btn-primary submit px-3">Sign

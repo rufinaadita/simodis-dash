@@ -97,10 +97,10 @@ class DetaileventController extends Controller
         // notifikasi dengan session
         $datas = Ulp::all();
         if (empty($datas[0])) {
-            return back()->with('Error', 'ERROR! Database ulp is null');
+            return back()->with('error', 'ERROR! Database ulp is null');
         } else {
             // alihkan halaman kembali
-            return back()->with('Status', 'Excel file imported successfully');
+            return back()->with('success', 'Excel file imported successfully');
         }
     }
 
@@ -404,25 +404,6 @@ class DetaileventController extends Controller
         return view('data.rank', compact('query', 'kum_gangguan', 'fgtm', 'n_gangguan', 'total_gangguan'));
     }
 
-    public function penyulang($bln = 10)
-    {
-
-        $query = DB::table('detailevents')->select('penyulang')->groupBy('penyulang')->get();
-        $penyulang = json_decode($query);
-        $rank = [];
-        foreach ($query as $key => $value) {
-            $n_rank = $this->rankSaidi($value->penyulang, $bln);
-            if ($n_rank == "") {
-                $rank[$value->penyulang . ''] = 0;
-            } else {
-                $rank[$value->penyulang . ''] = $this->rankSaidi($value->penyulang, $bln);
-            }
-        }
-
-        // dd($fgtm);
-        return view('data.rank', compact('rank', 'penyulang', 'query'));
-    }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -477,5 +458,12 @@ class DetaileventController extends Controller
     public function destroy(Detailevent $detailevent)
     {
         //
+    }
+
+    public function truncate()
+    {
+        $truncate = DB::table('detailevents')->truncate();
+
+        return back()->with('success', 'Tabel berhasil dibersihkan!');
     }
 }

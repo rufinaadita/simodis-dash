@@ -22,29 +22,15 @@
         <section class="basic-choices">
             <div class="col-12">
                 <div class="card mt-5">
-                    <div class="btn btn-danger">Select Filter</div>
+                    {{-- <div class="btn btn-danger">Select Filter</div> --}}
                     <div class="card-body">
-                        <form method="GET" action="/main">
+                        <form method="GET" action="{{ url('/dash/realisasi') }}">
                             {{-- <h6>Filtering</h6> --}}
                             {{-- <p>Use <code>.choices</code> class for basic choices control.</p> --}}
                             <div class="row">
                                 <div class="col-md-4">
                                     <fieldset class="form-group">
-                                        <select class="form-select form-select-lg" id="basicSelect" name="bulan" required>
-                                            <option disabled="disabled" selected>Pilih Bulan
-                                            </option>
-                                            @for ($i = 1; $i <= 12; $i++)
-                                                <option value="{{ $i }}">{{ $i }}</option>
-                                            @endfor
-                                        </select>
-                                        @error('bulan')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </fieldset>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <select class="choices form-select" name="ulp" required>
+                                        <select class="form-select" name="ulp" required>
                                             @for ($i = 0; $i < count($ulp_list); $i++)
                                                 <option value="{{ $ulp_list[$i]->nama_ulp }}">
                                                     {{ $ulp_list[$i]->nama_ulp }}
@@ -56,8 +42,23 @@
                                         </select>
                                         @error('ulp')
                                             <span class="text-danger">{{ $message }}</span>
+                                            {{-- <div class="alert alert-danger">{{ $message }}</div> --}}
                                         @enderror
-                                    </div>
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-2">
+                                    <fieldset class="form-group">
+                                        <select class="form-select" id="basicSelect" name="bulan" required>
+                                            <option disabled="disabled" selected>Pilih Bulan
+                                            </option>
+                                            @for ($i = 1; $i <= 12; $i++)
+                                                <option value="{{ $i }}">{{ $i }}</option>
+                                            @endfor
+                                        </select>
+                                        @error('bulan')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </fieldset>
                                 </div>
                                 <div class="col-md-4">
                                     <button class="btn btn-primary" type="submit">Refresh</button>
@@ -74,7 +75,7 @@
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">Monitoring SAIDI Harian</h4>
+                            {{-- <h4 class="card-title">Monitoring SAIDI Harian</h4> --}}
                         </div>
                         <div class="card-body">
                             <figure class="highcharts-figure">
@@ -86,7 +87,7 @@
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">Monitoring SAIFI Harian</h4>
+                            {{-- <h4 class="card-title">Monitoring SAIFI Harian</h4> --}}
                         </div>
                         <div class="card-body">
                             <figure class="highcharts-figure">
@@ -98,7 +99,6 @@
             </div>
         </section>
         {{-- highcharts End --}}
-
 
         <h3>Tabel Realisasi Harian SAIDI SAIFI</h3>
         <p class="text-subtitle text-muted">Detail data perhitungan <i>realisasi</i> untuk seluruh ULP dan UP3</p>
@@ -232,7 +232,13 @@
                         {{ $hari }},
                     @endfor
                 ],
-                crosshair: true
+                crosshair: true,
+                labels: {
+                    step: 1,
+                    style: {
+                        fontSize: '8px'
+                    }
+                }
             }],
             yAxis: [{ // Primary yAxis for line chart
                 labels: {
@@ -346,7 +352,13 @@
                         {{ $hari }},
                     @endfor
                 ],
-                crosshair: true
+                crosshair: true,
+                labels: {
+                    step: 1,
+                    style: {
+                        fontSize: '8px'
+                    }
+                }
             }],
             yAxis: [{ // Primary yAxis
                 labels: {
