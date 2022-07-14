@@ -3,18 +3,7 @@
 @import 'bootstrap/mixins';
 
 $font-primary: 'Lato',Arial, sans-serif;
-$primary: #f35588;
-
-@mixin gradient-background(){
-	background: rgba(247,89,89,1);
-	background: -moz-linear-gradient(-45deg, rgba(247,89,89,1) 0%, rgba(243,85,135,1) 100%);
-	background: -webkit-gradient(left top, right bottom, color-stop(0%, rgba(247,89,89,1)), color-stop(100%, rgba(243,85,135,1)));
-	background: -webkit-linear-gradient(-45deg, rgba(247,89,89,1) 0%, rgba(243,85,135,1) 100%);
-	background: -o-linear-gradient(-45deg, rgba(247,89,89,1) 0%, rgba(243,85,135,1) 100%);
-	background: -ms-linear-gradient(-45deg, rgba(247,89,89,1) 0%, rgba(243,85,135,1) 100%);
-	background: linear-gradient(135deg, rgba(247,89,89,1) 0%, rgba(243,85,135,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f75959', endColorstr='#f35587', GradientType=1 );
-}
+$primary: #1089ff;
 
 body{
 	font-family: $font-primary;
@@ -68,109 +57,51 @@ h1, h2, h3, h4, h5,
 	background-position: center center;
 }
 
-.wrap{
-	width: 100%;
-	border-radius: 5px;
+.login-wrap{
+	position: relative;
+	background: $white;
+	border-radius: 10px;
 	-webkit-box-shadow: 0px 10px 34px -15px rgba(0,0,0,0.24);
 	-moz-box-shadow: 0px 10px 34px -15px rgba(0,0,0,0.24);
 	box-shadow: 0px 10px 34px -15px rgba(0,0,0,0.24);
-}
-.text-wrap,.login-wrap{
-	width: 50%;
-	@include media-breakpoint-down(md){
-		width: 100%;
+	h3{
+		font-weight: 300;
 	}
-}
-
-.text-wrap{
-	@include gradient-background();
-	color: $white;
-	.text{
-		h2{
-			font-weight: 900;
+	.icon{
+		width: 80px;
+		height: 80px;
+		background: $primary;
+		border-radius: 50%;
+		font-size: 30px;
+		margin: 0 auto;
+		margin-bottom: 10px;
+		span{
 			color: $white;
 		}
 	}
 }
 
-.login-wrap{
-	position: relative;
-	background: $white;
-	h3{
-		font-weight: 300;
-	}
-}
-
-
-.form-group{
-	position: relative;
-	.label{
-		font-size: 12px;
-		text-transform: uppercase;
-		letter-spacing: 1px;
-		color: $black;
-		font-weight: 700;
-	}
-	a{
-		color: lighten($black,50%);
-	}
-}
-
 //FORM CONTROL
 .form-control {
-	height: 48px;
-	background: rgba(0,0,0,.05);
+	height: 52px;
+	background: $white;
 	color: $black;
 	font-size: 16px;
-	border-radius: 50px;
+	border-radius: 5px;
 	box-shadow: none;
-	border: 1px solid transparent;
-	padding-left: 20px;
-	padding-right: 20px;
-	@include transition();
-	&::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-	  color: rgba(0,0,0,.2) !important;
-	}
-	&::-moz-placeholder { /* Firefox 19+ */
-	  color: rgba(0,0,0,.2) !important;
-	}
-	&:-ms-input-placeholder { /* IE 10+ */
-	  color: rgba(0,0,0,.2) !important;
-	}
-	&:-moz-placeholder { /* Firefox 18- */
-	  color: rgba(0,0,0,.2) !important;
-	}
+	border: 1px solid rgba(0,0,0,.1);
 	&:focus, &:active {
 		outline: none !important;
 		box-shadow: none;
-		background: rgba(0,0,0,.07);
-		border-color: transparent;
+		border: 1px solid $primary;
 	}
+}
+textarea.form-control {
+	height: inherit!important;
 }
 
-.social-media{
-	position: relative;
-	width: 100%;
-	.social-icon{
-		display: block;
-		width: 40px;
-		height: 40px;
-		background: transparent;
-		border: 1px solid rgba(0,0,0,.05);
-		font-size: 16px;
-		margin-right: 5px;
-		border-radius: 50%;
-		span{
-			color: lighten($black,60%);
-		}
-		&:hover, &:focus{
-			background: $primary;
-			span{
-				color: $white;
-			}
-		}
-	}
-}
+
+
 
 //CHECKBOX STYLE
 .checkbox-wrap {
@@ -241,22 +172,20 @@ h1, h2, h3, h4, h5,
 //BUTTON
 .btn {
 	cursor: pointer;
+	@include border-radius(40px);
 	box-shadow: none!important;
 	font-size: 15px;
-	padding: 10px 20px;
-	border-radius: 50px;
 	&:hover, &:active, &:focus {
 		outline: none;
 	}
 	&.btn-primary {
-		background: $primary;
-		border: 1px solid $primary;
-		color: $white;
-		@include gradient-background();
+		background: $primary !important;
+		border: 1px solid $primary !important;
+		color: $white !important;
 		&:hover {
 			border: 1px solid $primary;
-			background: $primary;
-			color :$white;
+			background: transparent;
+			color :$primary;
 		}
 		&.btn-outline-primary {
 			border: 1px solid $primary;
@@ -269,24 +198,5 @@ h1, h2, h3, h4, h5,
 			}
 		}
 	}
-	&.btn-white {
-		background: $white;
-		border: 1px solid $white;
-		color: $white;
-		&:hover {
-			border: 1px solid $white;
-			background: transparent;
-			color :$white;
-		}
-		&.btn-outline-white {
-			border: 1px solid $white;
-			background: transparent;
-			color :$white;
-			&:hover {
-				border: 1px solid transparent;
-				background: $white;
-				color :$black;
-			}
-		}
-	}
 }
+

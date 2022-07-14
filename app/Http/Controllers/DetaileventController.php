@@ -10,12 +10,16 @@ use App\Models\Ulp;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Expr\Isset_;
-use Session;
 
 
 class DetaileventController extends Controller
 {
+    public function showDash()
+    {
+        $data = Detailevent::all();
+        return view('data.detailevent', compact('data'));
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -45,7 +49,11 @@ class DetaileventController extends Controller
         $ulp_list = $dataHarian['ulp_list'];
         $up3_name = $dataHarian['up3_name'];
 
-        return view('index', compact('target', 'harian', 'ulp_list', 'up3_name', 'realisasi', 'nama_ulp'));
+        $ulp_exists = DB::table('ulp')
+            ->where('id', 1)
+            ->exists();
+
+        return view('index', compact('target', 'harian', 'ulp_list', 'up3_name', 'realisasi', 'nama_ulp', 'ulp_exists'));
     }
 
     public function chartHarian(Request $request)
@@ -71,7 +79,11 @@ class DetaileventController extends Controller
         $ulp_list = $dataHarian['ulp_list'];
         $up3_name = $dataHarian['up3_name'];
 
-        return view('data.harian', compact('harian', 'ulp_list', 'up3_name', 'target', 'realisasi', 'nama_ulp'));
+        $ulp_exists = DB::table('ulp')
+            ->where('id', 1)
+            ->exists();
+
+        return view('data.harian', compact('harian', 'ulp_list', 'up3_name', 'target', 'realisasi', 'nama_ulp', 'ulp_exists'));
     }
 
     public function importExcel(Request $request)
@@ -242,7 +254,6 @@ class DetaileventController extends Controller
 
     public function targetSaidi($ulp, $bulan)
     {
-        // echo "harian";
         $ulp = $ulp;
         $bln = $bulan;
         $thn = 2021;
@@ -250,26 +261,33 @@ class DetaileventController extends Controller
 
         //nilai untuk chart harian
         // mencari target harian dan target kumulatif ulp per bulan
-        $target_saidi = DB::table('ulp')->where('nama_ulp', $ulp)->first()->target1_ulp; //mengambil nilai target saidi (target1) sesuai ulp
-        $nakh = round($target_saidi / 12 * 0.85, 1); //nilai akhir kumulatif
-        $na = round($nakh / $jml_hr, 1); //nilai awal kumulatif
-        $kumulatif = [];
-        $target_harian = [];
-        for ($i = 1; $i <= $jml_hr; $i++) {
-            $target_harian[$i] = $na;
-            if ($i == 1) {
-                $kumulatif[$i] = $na;
-            } else if ($i == $jml_hr) {
-                $kumulatif[$i] = $nakh;
-            } else {
-                $kumulatif[$i] = round($na + $kumulatif[$i - 1], 1);
+        $ulp_exists = DB::table('ulp')->where('id', 1)->exists();
+        // dd($db_null);
+        if ($ulp_exists == false) {
+            $target = 0;
+            return $target;
+        } else {
+            $target_saidi = DB::table('ulp')->where('nama_ulp', $ulp)->first()->target1_ulp; //mengambil nilai target saidi (target1) sesuai ulp
+            $nakh = round($target_saidi / 12 * 0.85, 1); //nilai akhir kumulatif
+            $na = round($nakh / $jml_hr, 1); //nilai awal kumulatif
+            $kumulatif = [];
+            $target_harian = [];
+            for ($i = 1; $i <= $jml_hr; $i++) {
+                $target_harian[$i] = $na;
+                if ($i == 1) {
+                    $kumulatif[$i] = $na;
+                } else if ($i == $jml_hr) {
+                    $kumulatif[$i] = $nakh;
+                } else {
+                    $kumulatif[$i] = round($na + $kumulatif[$i - 1], 1);
+                }
             }
+
+            $target['target_harian'] = $target_harian;
+            $target['target_kum'] = $kumulatif;
+
+            return $target;
         }
-
-        $target['target_harian'] = $target_harian;
-        $target['target_kum'] = $kumulatif;
-
-        return $target;
     }
 
     public function targetSaifi($ulp, $bulan)
@@ -281,27 +299,33 @@ class DetaileventController extends Controller
 
         //nilai untuk chart harian
         // mencari target harian dan target kumulatif ulp per bulan
-        $target_saifi = DB::table('ulp')->where('nama_ulp', $ulp)->first()->target2_ulp; //mengambil nilai target saifi (target2) sesuai ulp
-        $nakh = round($target_saifi / 12 * 0.8, 2); //nilai akhir kumulatif
-        $na = round($nakh / $jml_hr, 2); //nilai awal kumulatif
-        $kumulatif = [];
-        $target_harian = [];
-        $target = [];
-        for ($i = 1; $i <= $jml_hr; $i++) {
-            $target_harian[$i] = $na;
-            if ($i == 1) {
-                $kumulatif[$i] = $na;
-            } else if ($i == $jml_hr) {
-                $kumulatif[$i] = $nakh;
-            } else {
-                $kumulatif[$i] = round($na + $kumulatif[$i - 1], 2);
+        $ulp_exists = DB::table('ulp')->where('id', 1)->exists();
+        if ($ulp_exists == false) {
+            $target = 0;
+            return $target;
+        } else {
+            $target_saifi = DB::table('ulp')->where('nama_ulp', $ulp)->first()->target2_ulp; //mengambil nilai target saifi (target2) sesuai ulp
+            $nakh = round($target_saifi / 12 * 0.8, 2); //nilai akhir kumulatif
+            $na = round($nakh / $jml_hr, 2); //nilai awal kumulatif
+            $kumulatif = [];
+            $target_harian = [];
+            $target = [];
+            for ($i = 1; $i <= $jml_hr; $i++) {
+                $target_harian[$i] = $na;
+                if ($i == 1) {
+                    $kumulatif[$i] = $na;
+                } else if ($i == $jml_hr) {
+                    $kumulatif[$i] = $nakh;
+                } else {
+                    $kumulatif[$i] = round($na + $kumulatif[$i - 1], 2);
+                }
             }
-        }
 
-        $target['target_harian'] = $target_harian;
-        $target['target_kum'] = $kumulatif;
-        // dd($target);
-        return $target;
+            $target['target_harian'] = $target_harian;
+            $target['target_kum'] = $kumulatif;
+            // dd($target);
+            return $target;
+        }
     }
 
     public function releUlp($ulp, $bulan, $index)

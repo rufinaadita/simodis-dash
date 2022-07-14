@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{{ asset('assets/images/logo/favicon.ico') }}">
-    <title>Admin - SI MODIS</title>
+    <title>Admin | SI MODIS</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -56,8 +56,8 @@
                             <img src="{{ asset('assets/images/faces/1.jpg') }}" alt="Face 1">
                         </div>
                         <div class="ms-3 name">
-                            <h5 class="font-bold">Danish Zahir</h5>
-                            <p class="mb-0 text-sm text-gray-600">Administrator</p>
+                            <h5 class="font-bold">{{ auth()->user()->name }}</h5>
+                            <p class="mb-0 text-sm text-gray-600">{{ auth()->user()->status }}</p>
                         </div>
                     </div>
                 </div>
@@ -105,14 +105,20 @@
                             </a>
                         </li> --}}
                         <li class="sidebar-title">Other</li>
-                        <li class="sidebar-item " id="sidebar-tabel">
+                        {{-- <li class="sidebar-item " id="sidebar-tabel">
                             <a class='sidebar-link' href="{{ url('/user/profile') }}">
                                 <i class="bi bi-person"></i>
                                 <span> My Profile</span>
                             </a>
+                        </li> --}}
+                        <li class="sidebar-item " id="sidebar-tabel">
+                            <a class='sidebar-link' href="{{ url('/main/realisasi') }}">
+                                <i class="bi bi-card-heading"></i>
+                                <span> Main Dashboard</span>
+                            </a>
                         </li>
                         <li class="sidebar-item " id="sidebar-tabel">
-                            <a href="#" class='sidebar-link'>
+                            <a href="/auth/logout" class='sidebar-link'>
                                 <i class="bi bi-box-arrow-left"></i>
                                 <span>Logout</span>
                             </a>

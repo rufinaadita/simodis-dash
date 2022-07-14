@@ -26,7 +26,8 @@ class Masterdata extends Migration
             $table->string('j_padam')->nullable();
             $table->string('j_nyala')->nullable();
             $table->string('lama_padam')->nullable();
-            $table->integer('bbn_sebelum')->nullable();
+            // $table->integer('bbn_sebelum')->nullable();
+            $table->string('bbn_sebelum')->nullable();
             $table->integer('bbn_setelah')->nullable();
 
             $table->integer('arus_ggn_r')->nullable();
@@ -52,8 +53,8 @@ class Masterdata extends Migration
             $table->string('penyebab_pdm');
             $table->string('lokasi_gangguan')->nullable();
             $table->string('trip_tembus')->nullable();
-            $table->string('penormalan');
-            $table->string('kontrol');
+            $table->string('penormalan')->nullable();
+            $table->string('kontrol')->nullable();
             $table->string('dispatcher')->nullable();
             $table->string('bulan');
             $table->string('hari');

@@ -27,12 +27,18 @@ class DetaileventImport implements ToModel, WithCalculatedFormulas
             // echo "error! DB Ulp is null";            
             // die;
         } else {
-
-            $total_plg = DB::table('ulp')->sum('jumlah_ulp');
-            // dd($total_plg);
-            $saidi = $row[12] / $total_plg * 60;
-            $saifi = $row[10] / $total_plg;
-
+            $ulp_up3 = 'up3 pekanbaru';
+            if (DB::table('ulp')->where(strtolower('nama_ulp'), $ulp_up3)->exists() == true) {
+                $query = DB::table('ulp')->where(strtolower('nama_ulp'), $ulp_up3)->first();
+                $total_plg = $query->jumlah_ulp;
+                // dd($total_plg);
+                $saidi = $row[12] / $total_plg * 60;
+                $saifi = $row[10] / $total_plg;
+            } else {
+                $total_plg = DB::table('ulp')->sum('jumlah_ulp'); //kalau jumlah plg up3 tidak masuk atau null
+                $saidi = $row[12] / $total_plg * 60;
+                $saifi = $row[10] / $total_plg;
+            }
 
             $ulp = DB::table('ulp')->where('nama_ulp', $row[4])->get();
             if (isset(json_decode($ulp)[0])) {

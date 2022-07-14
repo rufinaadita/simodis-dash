@@ -1,4 +1,4 @@
-@extends('layout.template')
+@extends('navbar.admin')
 
 @section('content')
 
@@ -108,7 +108,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($detailevents as $row)
+                            @foreach ($data as $row)
                                 <tr>
                                     <td>{{ $row->id }}</td>
                                     <td>{{ $row->no_lapor }}</td>

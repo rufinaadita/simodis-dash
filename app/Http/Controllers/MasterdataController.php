@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class MasterdataController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -17,8 +18,8 @@ class MasterdataController extends Controller
      */
     public function index()
     {
-        $data = Masterdata::all();
-        return view('masterdata', compact('data'));
+        $datas = Masterdata::all();
+        return view('data.masterdata', compact('datas'));
     }
 
     public function importExcel(Request $request)
