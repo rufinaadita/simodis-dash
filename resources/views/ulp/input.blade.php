@@ -120,6 +120,7 @@
                         </table>
                     </div>
                 </div>
+            </section>
         </div>
 
     </section>

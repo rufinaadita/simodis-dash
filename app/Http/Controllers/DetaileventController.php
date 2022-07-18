@@ -6,6 +6,7 @@ use App\Models\Detailevent;
 use App\Http\Requests\StoreDetaileventRequest;
 use App\Http\Requests\UpdateDetaileventRequest;
 use App\Imports\DetaileventImport;
+use App\Models\Masterdata;
 use App\Models\Ulp;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
@@ -25,6 +26,37 @@ class DetaileventController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function importExcel(Request $request)
+    {
+        // validasi
+        $this->validate($request, [
+            'file' => 'required|mimes:csv,xls,xlsx'
+        ]);
+
+        // menangkap file excel
+        $file = $request->file('file');
+
+        // membuat nama file unik
+        $namafile = rand() . $file->getClientOriginalName();
+
+        // upload ke folder file_dataMentah didalam folder public
+        $file->move('DataMentah', $namafile);
+
+        // import data
+        Excel::import(new DetaileventImport, public_path('/DataMentah/' . $namafile));
+        // die;
+
+        // notifikasi dengan session
+        $datas = Ulp::all();
+        if (empty($datas[0])) {
+            return back()->with('error', 'ERROR! Database ulp is null');
+        } else {
+            // alihkan halaman kembali
+            return back()->with('success', 'Excel file imported successfully');
+        }
+    }
+
     public function index(Request $request)
     {
         $filter = $request->all();
@@ -86,41 +118,96 @@ class DetaileventController extends Controller
         return view('data.harian', compact('harian', 'ulp_list', 'up3_name', 'target', 'realisasi', 'nama_ulp', 'ulp_exists'));
     }
 
-    public function importExcel(Request $request)
+    public function showRank(Request $request)
     {
-        // validasi
-        $this->validate($request, [
-            'file' => 'required|mimes:csv,xls,xlsx'
-        ]);
 
-        // menangkap file excel
-        $file = $request->file('file');
+        $filter = $request->all();
 
-        // membuat nama file unik
-        $namafile = rand() . $file->getClientOriginalName();
-
-        // upload ke folder file_dataMentah didalam folder public
-        $file->move('DataMentah', $namafile);
-
-        // import data
-        Excel::import(new DetaileventImport, public_path('/DataMentah/' . $namafile));
-        // die;
-
-        // notifikasi dengan session
-        $datas = Ulp::all();
-        if (empty($datas[0])) {
-            return back()->with('error', 'ERROR! Database ulp is null');
+        if ($request->ulp) {
+            $dataRank = $this->rankSaidi($filter['ulp'], 0, 0, "");
+        } else if ($request->bulan) {
+            $dataRank = $this->rankSaidi("", $filter['bulan'], 0, "");
+        } else if ($request->hari) {
+            $dataRank = $this->rankSaidi("", 0, $filter['hari'], "");
+        } else if ($request->tipe_gangguan) {
+            $dataRank = $this->rankSaidi("", 0, 0, $filter['tipe_gangguan']);
         } else {
-            // alihkan halaman kembali
-            return back()->with('success', 'Excel file imported successfully');
+            $dataRank = $this->rankSaidi();
         }
+
+        $dataHarian = $this->showHarian();
+
+        $ulp_exists = DB::table('ulp')
+            ->where('id', 1)
+            ->exists();
+
+        $ulp_list = $dataHarian['ulp_list'];
+        $harian = $dataHarian['harian'];
+
+        $fgtm = $dataRank['fgtm'];
+        $kum_gangguan = $dataRank['kum_gangguan'];
+        $rank_saidi = $dataRank['rank_saidi'];
+        $kum_penyulang = $dataRank['gg_penyulang'];
+        $n_gangguan = $dataRank['n_gangguan'];
+        $total_gangguan = $dataRank['total_gangguan'];
+
+
+        $tipe_ggn = DB::select("SELECT tipe_gangguan FROM masterdata GROUP BY tipe_gangguan");
+
+        // dd($tipe_ggn);
+        return view('data.rank', compact('rank_saidi', 'kum_gangguan', 'fgtm', 'n_gangguan', 'total_gangguan', 'kum_penyulang', 'ulp_exists', 'ulp_list', 'harian', 'tipe_ggn'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function rankSaidi($ulp = '', $bln = 0, $hari = 0, $tipe_ggn = '')
+    {
+        $rank = [];
+        $tipe_gangguan = 'temporer';
+        $kategori = 'kp';
+
+        $kum_gangguan = "";
+
+        if ($ulp != "" && $bln != 0 && $hari != 0) {
+            $rank_saidi = DB::select("SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM detailevents WHERE month(tgl_nyala)={$bln} AND day(tgl_nyala)={$hari} AND ulp='{$ulp}' group by penyulang ORDER BY `ranksaidi` DESC");
+            $kum_gangguan = DB::select("SELECT rayon,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata  GROUP BY rayon ORDER BY jml_gangguan DESC");
+        } else if ($ulp != "") {
+            $rank_saidi = DB::select("SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM detailevents WHERE ulp='{$ulp}' group by penyulang ORDER BY `ranksaidi` DESC");
+            $kum_gangguan = DB::select("SELECT rayon,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata  GROUP BY rayon ORDER BY jml_gangguan DESC");
+        } else if ($bln != 0) {
+            $rank_saidi = DB::select("SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM detailevents WHERE month(tgl_nyala)={$bln} group by penyulang ORDER BY `ranksaidi` DESC");
+            $kum_gangguan = DB::select("SELECT rayon,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata WHERE month(tgl_nyala)={$bln} GROUP BY rayon ORDER BY jml_gangguan DESC");
+        } else if ($hari != 0) {
+            $rank_saidi = DB::select("SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM detailevents WHERE day(tgl_nyala)={$hari} group by penyulang ORDER BY `ranksaidi` DESC");
+        } else if ($tipe_gangguan != "") {
+            $rank_saidi = DB::select("SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM detailevents WHERE day(tgl_nyala)={$hari} group by penyulang ORDER BY `ranksaidi` DESC");
+            $kum_gangguan = DB::select("SELECT rayon,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata WHERE tipe_gangguan='{$tipe_ggn}' GROUP BY rayon ORDER BY jml_gangguan DESC");
+        } else {
+            $rank_saidi = DB::select("SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM detailevents group by penyulang ORDER BY `ranksaidi` DESC");
+            $kum_gangguan = DB::select("SELECT rayon,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata  GROUP BY rayon ORDER BY jml_gangguan DESC");
+        }
+
+        // $kum_gangguan = DB::select("SELECT rayon,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata  GROUP BY rayon ORDER BY jml_gangguan DESC");
+        $n_gangguan = "";
+        $total_gangguan = 0;
+        foreach ($kum_gangguan as $value) {
+            $n_gangguan .= $value->jml_gangguan . ',';
+            $total_gangguan += $value->jml_gangguan;
+        }
+
+        $kum_penyulang = DB::select("SELECT penyulang,COUNT(tipe_gangguan+kategori) as kum_gangguan FROM `masterdata` WHERE month(tgl_nyala)=10 GROUP BY penyulang ORDER BY kum_gangguan DESC");
+
+        $fgtm = DB::select("SELECT month(tgl_nyala) as bulan,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata GROUP BY month(tgl_nyala) ORDER BY month(tgl_nyala) ASC");
+
+        $rank['fgtm'] = $fgtm;
+        $rank['kum_gangguan'] = $kum_gangguan;
+        $rank['rank_saidi'] = $rank_saidi;
+        $rank['gg_penyulang'] = $kum_penyulang;
+        $rank['n_gangguan'] = $n_gangguan;
+        $rank['total_gangguan'] = $total_gangguan;
+
+        // dd($fgtm);
+        return $rank;
+    }
+
     public function create()
     {
         //
@@ -406,83 +493,27 @@ class DetaileventController extends Controller
         return $realisasi;
     }
 
-    public function rankSaidi($ulp = '', $bln = 10)
-    {
+    // public function delFilter()
+    // {
+    //     $dataRank = $this->rankSaidi();
+    //     $dataHarian = $this->showHarian();
 
-        $fgtm = DB::select("SELECT month(tgl_nyala) as bulan,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata GROUP BY month(tgl_nyala) ORDER BY month(tgl_nyala) ASC");
-        $kum_gangguan = DB::select("SELECT rayon,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata WHERE month(tgl_nyala)={$bln} GROUP BY rayon ORDER BY jml_gangguan DESC");
+    //     $ulp_exists = DB::table('ulp')
+    //         ->where('id', 1)
+    //         ->exists();
 
-        if ($ulp == "") {
-            $query = DB::select("SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM detailevents WHERE month(tgl_nyala)={$bln} group by penyulang ORDER BY `ranksaidi` DESC");
-        } else {
-            $query = DB::select("SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM detailevents WHERE month(tgl_nyala)={$bln} AND ulp={$ulp} group by penyulang ORDER BY `ranksaidi` DESC");
-        }
-        $n_gangguan = "";
-        $total_gangguan = 0;
-        foreach ($kum_gangguan as $value) {
-            $n_gangguan .= $value->jml_gangguan . ',';
-            $total_gangguan += $value->jml_gangguan;
-        }
+    //     $ulp_list = $dataHarian['ulp_list'];
+    //     $harian = $dataHarian['harian'];
 
-        // dd($fgtm);
-        return view('data.rank', compact('query', 'kum_gangguan', 'fgtm', 'n_gangguan', 'total_gangguan'));
-    }
+    //     $fgtm = $dataRank['fgtm'];
+    //     $kum_gangguan = $dataRank['kum_gangguan'];
+    //     $query = $dataRank['rank_saidi'];
+    //     $kum_penyulang = $dataRank['gg_penyulang'];
+    //     $n_gangguan = $dataRank['n_gangguan'];
+    //     $total_gangguan = $dataRank['total_gangguan'];
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreDetaileventRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreDetaileventRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Detailevent  $detailevent
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Detailevent $detailevent)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Detailevent  $detailevent
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Detailevent $detailevent)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateDetaileventRequest  $request
-     * @param  \App\Models\Detailevent  $detailevent
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateDetaileventRequest $request, Detailevent $detailevent)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Detailevent  $detailevent
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Detailevent $detailevent)
-    {
-        //
-    }
+    //     return view('data.rank', compact('query', 'kum_gangguan', 'fgtm', 'n_gangguan', 'total_gangguan', 'kum_penyulang', 'ulp_exists', 'ulp_list', 'harian'));
+    // }
 
     public function truncate()
     {

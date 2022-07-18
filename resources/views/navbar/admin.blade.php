@@ -92,12 +92,12 @@
                                 </li> --}}
                             </ul>
                         </li>
-                        {{-- <li class="sidebar-item " id="sidebar-tabel">
-                            <a href="#" class='sidebar-link'>
-                                <i class="bi bi-grid-1x2-fill"></i>
-                                <span>Tabel Harian</span>
+                        <li class="sidebar-item " id="sidebar-tabel">
+                            <a href="/user/data" class='sidebar-link'>
+                                <i class="bi bi-person-badge-fill"></i>
+                                <span>Users</span>
                             </a>
-                        </li> --}}
+                        </li>
                         {{-- <li class="sidebar-item " id="sidebar-tabel">
                             <a href="{{ url('/dash/rank') }}" class='sidebar-link'>
                                 <i class="bi bi-bar-chart-fill"></i>

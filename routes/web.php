@@ -23,9 +23,12 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::match(['get', 'post'], '/',  [DetaileventController::class, 'chartHarian']);
+
 //custom login
 Route::prefix('/auth')->name('auth.')->group(function () {
     Route::get('/login', [PegawaiController::class, 'showLogin'])->name('login')->middleware('guest');
@@ -43,13 +46,18 @@ Route::prefix('/user')->name('user.')->group(function () {
     Route::get('/profile', function () {
         return view('user.profile');
     });
+    Route::get('/data', [PegawaiController::class, 'showUser']);
+    Route::get('/add', [PegawaiController::class, 'create']);
+    Route::match(['get', 'post'], '/store', [PegawaiController::class, 'store']);
+    Route::get('/delete/{id}', [PegawaiController::class, 'destroy']);
 });
 
 // Route::get('/dash',  [DetaileventController::class, 'index']);
 Route::match(['get', 'post'], '/dash',  [DetaileventController::class, 'index'])->name('dashboard')->middleware('auth');
 Route::prefix('/main')->group(function () {
     Route::match(['get', 'post'], '/realisasi',  [DetaileventController::class, 'chartHarian']);
-    Route::match(['get', 'post'], '/rank',  [DetaileventController::class, 'rankSaidi']);
+    Route::match(['get', 'post'], '/rank',  [DetaileventController::class, 'showRank']);
+    Route::get('/rank/all',  [DetaileventController::class, 'delFilter']);
 });
 
 Route::get('/chart',  [DetaileventController::class, 'tabelHarian']);
