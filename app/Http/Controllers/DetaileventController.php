@@ -92,10 +92,10 @@ class DetaileventController extends Controller
     {
         $filter = $request->all();
         if ($filter) {
-            $request->validate([
-                'bulan' => ['required'],
-                'ulp' => ['required'],
-            ]);
+            // $request->validate([
+            //     'bulan' => ['required'],
+            //     'ulp' => ['required'],
+            // ]);
             $chart = $this->tabelHarian($filter['ulp'], $filter['bulan']);
             $dataHarian = $this->showHarian($filter['bulan']);
         } else {
@@ -123,17 +123,9 @@ class DetaileventController extends Controller
 
         $filter = $request->all();
 
-        if ($request->ulp) {
-            $dataRank = $this->rankSaidi($filter['ulp'], 0, 0, "");
-        } else if ($request->bulan) {
-            $dataRank = $this->rankSaidi("", $filter['bulan'], 0, "");
-        } else if ($request->hari) {
-            $dataRank = $this->rankSaidi("", 0, $filter['hari'], "");
-        } else if ($request->tipe_gangguan) {
-            $dataRank = $this->rankSaidi("", 0, 0, $filter['tipe_gangguan']);
-        } else {
-            $dataRank = $this->rankSaidi();
-        }
+        // dd($filter);    
+
+        $dataRank = $this->rankSaidi(@$filter['ulp'], @$filter['bulan'], @$filter['hari'], @$filter['tipe_gangguan'], @$filter['kategori'], @$filter['rayon']);
 
         $dataHarian = $this->showHarian();
 
@@ -150,61 +142,149 @@ class DetaileventController extends Controller
         $kum_penyulang = $dataRank['gg_penyulang'];
         $n_gangguan = $dataRank['n_gangguan'];
         $total_gangguan = $dataRank['total_gangguan'];
-
+        $tg_penyulang = $dataRank['tg_penyulang'];
 
         $tipe_ggn = DB::select("SELECT tipe_gangguan FROM masterdata GROUP BY tipe_gangguan");
+        $kategori = DB::select("SELECT kategori FROM masterdata GROUP BY kategori");
+        $rayon = DB::select("SELECT rayon FROM masterdata GROUP BY rayon");
 
         // dd($tipe_ggn);
-        return view('data.rank', compact('rank_saidi', 'kum_gangguan', 'fgtm', 'n_gangguan', 'total_gangguan', 'kum_penyulang', 'ulp_exists', 'ulp_list', 'harian', 'tipe_ggn'));
+        return view(
+            'data.rank',
+            compact(
+                'ulp_exists',
+                'rank_saidi',
+                'kum_gangguan',
+                'fgtm',
+                'n_gangguan',
+                'total_gangguan',
+                'tg_penyulang',
+                'kum_penyulang',
+                'ulp_list',
+                'harian',
+                'tipe_ggn',
+                'kategori',
+                'rayon'
+            )
+        );
     }
 
-    public function rankSaidi($ulp = '', $bln = 0, $hari = 0, $tipe_ggn = '')
+    public function rankSaidi($ulp = '', $bln = 0, $hari = 0, $tipe_ggn = '', $kategori = '', $rayon = '')
     {
         $rank = [];
-        $tipe_gangguan = 'temporer';
-        $kategori = 'kp';
 
+        $fgtm = DB::select("SELECT month(tgl_nyala) as bulan,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata GROUP BY month(tgl_nyala) ORDER BY month(tgl_nyala) ASC");
         $kum_gangguan = "";
 
-        if ($ulp != "" && $bln != 0 && $hari != 0) {
-            $rank_saidi = DB::select("SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM detailevents WHERE month(tgl_nyala)={$bln} AND day(tgl_nyala)={$hari} AND ulp='{$ulp}' group by penyulang ORDER BY `ranksaidi` DESC");
-            $kum_gangguan = DB::select("SELECT rayon,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata  GROUP BY rayon ORDER BY jml_gangguan DESC");
-        } else if ($ulp != "") {
-            $rank_saidi = DB::select("SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM detailevents WHERE ulp='{$ulp}' group by penyulang ORDER BY `ranksaidi` DESC");
-            $kum_gangguan = DB::select("SELECT rayon,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata  GROUP BY rayon ORDER BY jml_gangguan DESC");
-        } else if ($bln != 0) {
-            $rank_saidi = DB::select("SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM detailevents WHERE month(tgl_nyala)={$bln} group by penyulang ORDER BY `ranksaidi` DESC");
-            $kum_gangguan = DB::select("SELECT rayon,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata WHERE month(tgl_nyala)={$bln} GROUP BY rayon ORDER BY jml_gangguan DESC");
-        } else if ($hari != 0) {
-            $rank_saidi = DB::select("SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM detailevents WHERE day(tgl_nyala)={$hari} group by penyulang ORDER BY `ranksaidi` DESC");
-        } else if ($tipe_gangguan != "") {
-            $rank_saidi = DB::select("SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM detailevents WHERE day(tgl_nyala)={$hari} group by penyulang ORDER BY `ranksaidi` DESC");
-            $kum_gangguan = DB::select("SELECT rayon,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata WHERE tipe_gangguan='{$tipe_ggn}' GROUP BY rayon ORDER BY jml_gangguan DESC");
-        } else {
-            $rank_saidi = DB::select("SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM detailevents group by penyulang ORDER BY `ranksaidi` DESC");
-            $kum_gangguan = DB::select("SELECT rayon,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata  GROUP BY rayon ORDER BY jml_gangguan DESC");
+        // $rank_saidi = DB::select("SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM detailevents GROUP BY penyulang ORDER BY `ranksaidi` DESC");
+        // $kum_gangguan = DB::select("SELECT rayon,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata GROUP BY rayon ORDER BY jml_gangguan DESC");
+        // $kum_penyulang = DB::select("SELECT penyulang,COUNT(tipe_gangguan+kategori) as kum_gangguan FROM `masterdata` GROUP BY penyulang ORDER BY kum_gangguan DESC");
+
+        $a = array();
+        // if ($ulp) array_push($a, "ulp='" . $ulp . "'");
+        // if ($bln) array_push($a, "month(tgl_nyala)=" . $bln . "");
+        // if ($hari) array_push($a, "day(tgl_nyala)=" . $hari . "");
+        // if ($tipe_ggn) $a[] = "tipe_gangguan='" . $tipe_ggn . "'";
+        // if ($kategori) $a[] = "kategori='" . $kategori . "'";
+        // if ($rayon) $a[] = "rayon='" . $rayon . "'";
+
+        if ($ulp) $a['ulp'] = "ulp='" . $ulp . "'";
+        if ($bln) $a['bln'] = "month(tgl_nyala)=" . $bln . "";
+        if ($hari) $a['hari'] = "day(tgl_nyala)=" . $hari . "";
+        if ($tipe_ggn) $a['tipe_gangguan'] = "tipe_gangguan='" . $tipe_ggn . "'";
+        if ($kategori) $a['kategori'] = "kategori='" . $kategori . "'";
+        if ($rayon) $a['rayon'] = "rayon='" . $rayon . "'";
+
+        // dd($a);
+
+        $query = [];
+
+        $detailevent = "detailevents ";
+        $masterdata = "masterdata ";
+
+        $q_rank = "SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM " .  $detailevent;
+        $q_gangguan = "SELECT rayon,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM " . $masterdata;
+        $q_penyulang = "SELECT penyulang,COUNT(tipe_gangguan+kategori) as kum_gangguan FROM " . $masterdata;
+
+        $query['rank_saidi'] = $q_rank;
+        $query['kum_gangguan'] = $q_gangguan;
+        $query['kum_penyulang'] = $q_penyulang;
+
+        $i = 0;
+
+        $a_rank = $a;
+        $a_kum_gangguan = $a;
+        $a_kum_penyulang = $a;
+
+        unset($a_rank['tipe_gangguan']);
+        unset($a_rank['kategori']);
+        unset($a_rank['rayon']);
+
+        unset($a_kum_gangguan['hari']);
+        unset($a_kum_gangguan['ulp']);
+
+        unset($a_kum_penyulang['ulp']);
+
+        foreach ($a_rank as $key => $value) {
+            if ($i == 0) {
+                $query['rank_saidi'] = $q_rank .= "WHERE " . $value;
+            } else {
+                $query['rank_saidi'] = $q_rank .= " AND " . $value;
+            }
+            $i++;
         }
 
-        // $kum_gangguan = DB::select("SELECT rayon,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata  GROUP BY rayon ORDER BY jml_gangguan DESC");
+        $i = 0;
+
+        foreach ($a_kum_gangguan as $key => $value) {
+            if ($i == 0) {
+                $query['kum_gangguan'] = $q_gangguan .= "WHERE " . $value;
+            } else {
+                $query['kum_gangguan'] = $q_gangguan .= " AND " . $value;
+            }
+            $i++;
+        }
+
+        $i = 0;
+
+        foreach ($a_kum_penyulang as $key => $value) {
+            if ($i == 0) {
+                $query['kum_penyulang'] = $q_penyulang .= "WHERE " . $value;
+            } else {
+                $query['kum_penyulang'] = $q_penyulang .= " AND " . $value;
+            }
+            $i++;
+        }
+
+        $rank_saidi = DB::select($query['rank_saidi'] .= " GROUP BY penyulang ORDER BY ranksaidi DESC");
+        $kum_gangguan = DB::select($query['kum_gangguan'] .= " GROUP BY rayon ORDER BY jml_gangguan DESC");
+        $kum_penyulang = DB::select($query['kum_penyulang'] .= " GROUP BY penyulang ORDER BY kum_gangguan DESC");
+
+        dd($query);
+
         $n_gangguan = "";
+        $ng_penyulang = "";
         $total_gangguan = 0;
+        $tg_penyulang = 0;
         foreach ($kum_gangguan as $value) {
             $n_gangguan .= $value->jml_gangguan . ',';
             $total_gangguan += $value->jml_gangguan;
         }
 
-        $kum_penyulang = DB::select("SELECT penyulang,COUNT(tipe_gangguan+kategori) as kum_gangguan FROM `masterdata` WHERE month(tgl_nyala)=10 GROUP BY penyulang ORDER BY kum_gangguan DESC");
-
-        $fgtm = DB::select("SELECT month(tgl_nyala) as bulan,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata GROUP BY month(tgl_nyala) ORDER BY month(tgl_nyala) ASC");
+        foreach ($kum_penyulang as $value) {
+            $ng_penyulang .= $value->kum_gangguan . ',';
+            $tg_penyulang += $value->kum_gangguan;
+        }
 
         $rank['fgtm'] = $fgtm;
         $rank['kum_gangguan'] = $kum_gangguan;
         $rank['rank_saidi'] = $rank_saidi;
         $rank['gg_penyulang'] = $kum_penyulang;
         $rank['n_gangguan'] = $n_gangguan;
+        $rank['ng_penyulang'] = $ng_penyulang;
         $rank['total_gangguan'] = $total_gangguan;
+        $rank['tg_penyulang'] = $tg_penyulang;
 
-        // dd($fgtm);
         return $rank;
     }
 

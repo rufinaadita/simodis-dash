@@ -5,7 +5,6 @@
     @php
 
     $jml_hr = cal_days_in_month(CAL_GREGORIAN, $harian['bulan'], 2021); //jumlah hari perbulan
-
     @endphp
 
     @if ($ulp_exists == false)
@@ -38,12 +37,11 @@
                         <form method="POST" action="{{ url('/main/rank') }}">
                             @csrf
                             <div class="row">
-
                                 <div class="col-md-1">
                                     <h6>Bulan</h6>
                                     <fieldset class="form-group">
-                                        <select class="form-select" name="bulan" required>
-                                            <option disabled="disabled" selected>Pilih</option>
+                                        <select class="form-select" name="bulan" id="mySelect()" onchange="onSelect">
+                                            <option value="" disabled="disabled" selected>Pilih</option>
                                             @for ($i = 1; $i <= 12; $i++)
                                                 <option value="{{ $i }}">{{ $i }}
                                                 </option>
@@ -54,8 +52,8 @@
                                 <div class="col-md-1">
                                     <h6>Hari</h6>
                                     <fieldset class="form-group">
-                                        <select class="form-select" name="hari" required>
-                                            <option disabled="disabled" selected>Pilih</option>
+                                        <select class="form-select" name="hari">
+                                            <option value="" disabled="disabled" selected>Pilih</option>
                                             @for ($i = 1; $i <= $jml_hr; $i++)
                                                 <option value="{{ $i }}">{{ $i }}
                                                 </option>
@@ -63,11 +61,11 @@
                                         </select>
                                     </fieldset>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <h6>ULP</h6>
                                     <fieldset class="form-group">
-                                        <select class="form-select" name="ulp" required>
-                                            <option disabled="disabled" selected>Pilih</option>
+                                        <select class="form-select" name="ulp">
+                                            <option value="" disabled="disabled" selected>Pilih</option>
                                             @for ($i = 0; $i < count($ulp_list); $i++)
                                                 <option value="{{ $ulp_list[$i]->nama_ulp }}">
                                                     {{ $ulp_list[$i]->nama_ulp }}
@@ -76,14 +74,40 @@
                                         </select>
                                     </fieldset>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <h6>Tipe Gangguan</h6>
                                     <fieldset class="form-group">
-                                        <select class="form-select" name="tipe_gangguan" required>
-                                            <option disabled="disabled" selected>Pilih</option>
+                                        <select class="form-select" name="tipe_gangguan">
+                                            <option value="" disabled="disabled" selected>Pilih</option>
                                             @foreach ($tipe_ggn as $value)
                                                 <option value="{{ $value->tipe_gangguan }}">
                                                     {{ $value->tipe_gangguan }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-1">
+                                    <h6>Kategori</h6>
+                                    <fieldset class="form-group">
+                                        <select class="form-select" name="kategori">
+                                            <option disabled="disabled" selected>Pilih</option>
+                                            @foreach ($kategori as $value)
+                                                <option value="{{ $value->kategori }}">
+                                                    {{ $value->kategori }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-2">
+                                    <h6>Rayon</h6>
+                                    <fieldset class="form-group">
+                                        <select class="form-select" name="rayon">
+                                            <option disabled="disabled" selected>Pilih</option>
+                                            @foreach ($rayon as $value)
+                                                <option value="{{ $value->rayon }}">
+                                                    {{ $value->rayon }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -140,6 +164,13 @@
             </section>
         </div>
 
+        <script>
+            function onSelect() {
+                var x = document.getElementById("mySelect").value;
+                // document.getElementById("demo").innerHTML = "You selected: " + x;
+            }
+
+        </script>
 
         <script>
             Highcharts.chart('rank', {
@@ -175,7 +206,7 @@
                 tooltip: {
                     headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                     pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                        '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+                        '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
                     footerFormat: '</table>',
                     shared: true,
                     useHTML: true
@@ -222,7 +253,7 @@
                 var text = chart.renderer.text(
                         'Total Gangguan : {{ $total_gangguan }}',
                         600,
-                        30
+                        70
                     ).attr({
                         zIndex: 5
                     }).add(),
@@ -294,7 +325,7 @@
                 tooltip: {
                     headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                     pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                        '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+                        '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
                     footerFormat: '</table>',
                     shared: true,
                     useHTML: true
@@ -340,7 +371,7 @@
                         style: {
                             fontSize: '9px'
                         },
-                        rotation: 90
+                        rotation: 270
                     }
                 },
                 yAxis: {
@@ -352,7 +383,7 @@
                 tooltip: {
                     headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                     pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                        '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+                        '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
                     footerFormat: '</table>',
                     shared: true,
                     useHTML: true
@@ -373,6 +404,26 @@
                     ]
 
                 }]
+            }, function(chart) {
+                var text = chart.renderer.text(
+                        'Total Gangguan : {{ $tg_penyulang }}',
+                        900,
+                        70
+                    ).attr({
+                        zIndex: 5
+                    }).add(),
+                    textBox = text.getBBox();
+
+                console.log(typeof chart.renderer);
+
+                chart.renderer.rect(textBox.x - 10, textBox.y - 5, textBox.width + 20, textBox.height + 10, 2)
+                    .attr({
+                        fill: '#BADA55',
+                        stroke: 'black',
+                        'stroke-width': 1,
+                        zIndex: 4
+                    })
+                    .add();
             });
 
         </script>
