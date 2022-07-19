@@ -189,8 +189,8 @@ class DetaileventController extends Controller
         // if ($rayon) $a[] = "rayon='" . $rayon . "'";
 
         if ($ulp) $a['ulp'] = "ulp='" . $ulp . "'";
-        if ($bln) $a['bln'] = "month(tgl_nyala)=" . $bln . "";
-        if ($hari) $a['hari'] = "day(tgl_nyala)=" . $hari . "";
+        if ($bln) $a['bln'] = "month(tgl_padam)=" . $bln . "";
+        if ($hari) $a['hari'] = "day(tgl_padam)=" . $hari . "";
         if ($tipe_ggn) $a['tipe_gangguan'] = "tipe_gangguan='" . $tipe_ggn . "'";
         if ($kategori) $a['kategori'] = "kategori='" . $kategori . "'";
         if ($rayon) $a['rayon'] = "rayon='" . $rayon . "'";
@@ -272,7 +272,7 @@ class DetaileventController extends Controller
         }
 
         foreach ($kum_penyulang as $value) {
-            $ng_penyulang .= $value->kum_gangguan . ',';
+            // $ng_penyulang .= $value->kum_gangguan . ',';
             $tg_penyulang += $value->kum_gangguan;
         }
 
@@ -281,7 +281,6 @@ class DetaileventController extends Controller
         $rank['rank_saidi'] = $rank_saidi;
         $rank['gg_penyulang'] = $kum_penyulang;
         $rank['n_gangguan'] = $n_gangguan;
-        $rank['ng_penyulang'] = $ng_penyulang;
         $rank['total_gangguan'] = $total_gangguan;
         $rank['tg_penyulang'] = $tg_penyulang;
 
