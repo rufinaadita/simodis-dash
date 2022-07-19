@@ -260,7 +260,7 @@ class DetaileventController extends Controller
         $kum_gangguan = DB::select($query['kum_gangguan'] .= " GROUP BY rayon ORDER BY jml_gangguan DESC");
         $kum_penyulang = DB::select($query['kum_penyulang'] .= " GROUP BY penyulang ORDER BY kum_gangguan DESC");
 
-        dd($query);
+        // dd($query);
 
         $n_gangguan = "";
         $ng_penyulang = "";
