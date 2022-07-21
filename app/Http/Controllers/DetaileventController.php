@@ -92,10 +92,10 @@ class DetaileventController extends Controller
     {
         $filter = $request->all();
         if ($filter) {
-            // $request->validate([
-            //     'bulan' => ['required'],
-            //     'ulp' => ['required'],
-            // ]);
+            $request->validate([
+                'bulan' => ['required'],
+                'ulp' => ['required'],
+            ]);
             $chart = $this->tabelHarian($filter['ulp'], $filter['bulan']);
             $dataHarian = $this->showHarian($filter['bulan']);
         } else {
@@ -173,7 +173,8 @@ class DetaileventController extends Controller
     {
         $rank = [];
 
-        $fgtm = DB::select("SELECT month(tgl_nyala) as bulan,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata GROUP BY month(tgl_nyala) ORDER BY month(tgl_nyala) ASC");
+        $fgtm = DB::select("SELECT month(tgl_padam) as bulan,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata GROUP BY month(tgl_padam) ORDER BY month(tgl_padam) ASC");
+
         $kum_gangguan = "";
 
         // $rank_saidi = DB::select("SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM detailevents GROUP BY penyulang ORDER BY `ranksaidi` DESC");
@@ -182,8 +183,8 @@ class DetaileventController extends Controller
 
         $a = array();
         // if ($ulp) array_push($a, "ulp='" . $ulp . "'");
-        // if ($bln) array_push($a, "month(tgl_nyala)=" . $bln . "");
-        // if ($hari) array_push($a, "day(tgl_nyala)=" . $hari . "");
+        // if ($bln) array_push($a, "month(tgl_padam)=" . $bln . "");
+        // if ($hari) array_push($a, "day(tgl_padam)=" . $hari . "");
         // if ($tipe_ggn) $a[] = "tipe_gangguan='" . $tipe_ggn . "'";
         // if ($kategori) $a[] = "kategori='" . $kategori . "'";
         // if ($rayon) $a[] = "rayon='" . $rayon . "'";

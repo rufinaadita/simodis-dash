@@ -30,7 +30,7 @@
                     <h5>Monitoring Kinerja SAIDI SAIFI Harian UP3 Pekanbaru</h5>
                 </div>
             </div>
-            <a href="{{ url('/main/rank') }}" class="col-12 btn btn-outline-danger mt-3">Hapus Filter</a>
+            {{-- <a href="{{ url('/main/rank') }}" class="col-12 btn btn-outline-danger mt-3">Hapus Filter</a> --}}
             <section class="section">
                 <div class="card">
                     <div class="card-body">
