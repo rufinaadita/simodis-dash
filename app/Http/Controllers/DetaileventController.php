@@ -203,7 +203,7 @@ class DetaileventController extends Controller
         $detailevent = "detailevents ";
         $masterdata = "masterdata ";
 
-        $q_rank = "SELECT SUM(saidi_ulp) as ranksaidi, penyulang FROM " .  $detailevent;
+        $q_rank = "SELECT SUM(saidi) as ranksaidi, penyulang FROM " .  $detailevent;
         $q_gangguan = "SELECT rayon,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM " . $masterdata;
         $q_penyulang = "SELECT penyulang,COUNT(tipe_gangguan+kategori) as kum_gangguan FROM " . $masterdata;
 
