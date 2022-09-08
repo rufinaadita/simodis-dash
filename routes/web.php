@@ -9,6 +9,7 @@ use App\Http\Controllers\DetaileventController;
 use App\Http\Controllers\MasterdataController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\UlpController;
+use App\Http\Controllers\KehandalanController;
 use App\Models\Masterdata;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,6 +29,8 @@ use Illuminate\Support\Facades\Auth;
 // });
 
 Route::match(['get', 'post'], '/',  [DetaileventController::class, 'chartHarian']);
+
+
 
 //custom login
 Route::prefix('/auth')->name('auth.')->group(function () {
@@ -57,6 +60,7 @@ Route::match(['get', 'post'], '/dash',  [DetaileventController::class, 'index'])
 Route::prefix('/main')->group(function () {
     Route::match(['get', 'post'], '/realisasi',  [DetaileventController::class, 'chartHarian']);
     Route::match(['get', 'post'], '/rank',  [DetaileventController::class, 'showRank']);
+    Route::match(['get', 'post'], '/kehandalan',  [KehandalanController::class, 'index']);
     Route::get('/rank/all',  [DetaileventController::class, 'delFilter']);
 });
 

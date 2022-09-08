@@ -90,6 +90,8 @@ class DetaileventController extends Controller
 
     public function chartHarian(Request $request)
     {
+
+       
         $filter = $request->all();
         if ($filter) {
             $request->validate([
@@ -115,7 +117,11 @@ class DetaileventController extends Controller
             ->where('id', 1)
             ->exists();
 
+        
+        
+        
         return view('data.harian', compact('harian', 'ulp_list', 'up3_name', 'target', 'realisasi', 'nama_ulp', 'ulp_exists'));
+
     }
 
     public function showRank(Request $request)
