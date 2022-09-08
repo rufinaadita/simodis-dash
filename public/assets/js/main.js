@@ -49,3 +49,7 @@ if(typeof PerfectScrollbar == 'function') {
 
 // Scroll into active sidebar
 document.querySelector('.sidebar-item.active').scrollIntoView(false)
+
+// Info Modal Auto Show
+var myModal = new bootstrap.Modal(document.getElementById('infoModal'), {})
+myModal.toggle();

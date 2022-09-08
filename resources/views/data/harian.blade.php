@@ -31,6 +31,7 @@
                                     <div class="col-md-4">
                                         <fieldset class="form-group">
                                             <select class="form-select" name="ulp" required>
+                                                <option disabled selected>Pilih ULP</option>
                                                 @for ($i = 0; $i < count($ulp_list); $i++)
                                                     <option value="{{ $ulp_list[$i]->nama_ulp }}">
                                                         {{ $ulp_list[$i]->nama_ulp }}
@@ -52,7 +53,11 @@
                                                 <option disabled="disabled" selected>Pilih Bulan
                                                 </option>
                                                 @for ($i = 1; $i <= 12; $i++)
-                                                    <option value="{{ $i }}">{{ $i }}</option>
+                                                    @php
+                                                        $month_num = $i;
+                                                        $month_name = date('F', mktime(0, 0, 0, $month_num, 10));
+                                                    @endphp
+                                                    <option value="{{ $i }}">{{ $month_name }}</option>
                                                 @endfor
                                             </select>
                                             @error('bulan')
@@ -116,7 +121,7 @@
                                 <table
                                     class="table mb-0 table-hover table-bordered table-wrapper-scroll-y my-custom-scrollbar"
                                     style="font-size: .55rem">
-                                    <thead class="table-primary header">
+                                    <thead class="table-light header">
                                         <tr>
 
                                             <th>No</th>
@@ -136,9 +141,13 @@
                                         @foreach ($saidi['ulp'] as $row)
                                             <tr>
                                                 <td>{{ ++$no }}</td>
-                                                <td>{{ $row['nama_ulp']->nama_ulp }}</td>
+                                                <td class="text-bold-700">{{ $row['nama_ulp']->nama_ulp }}</td>
                                                 @foreach ($row['data'] as $data)
-                                                    <td>{{ $data }}</td>
+                                                    @if ($data == 0)
+                                                        <td class="table-warning">{{ $data }}</td>
+                                                    @else
+                                                        <td class="table-success">{{ $data }}</td>
+                                                    @endif
                                                 @endforeach
                                             </tr>
                                         @endforeach
@@ -172,7 +181,7 @@
                                 <table
                                     class="table mb-0 table-hover table-bordered table-wrapper-scroll-y my-custom-scrollbar"
                                     style="font-size: .5rem">
-                                    <thead class="table-primary header">
+                                    <thead class="table-light header">
                                         <tr>
 
                                             <th>No</th>
@@ -192,9 +201,13 @@
                                         @foreach ($saifi['ulp'] as $row)
                                             <tr>
                                                 <td>{{ ++$no }}</td>
-                                                <td>{{ $row['nama_ulp']->nama_ulp }}</td>
+                                                <td style="font-weight: 500">{{ $row['nama_ulp']->nama_ulp }}</td>
                                                 @foreach ($row['data'] as $data)
-                                                    <td>{{ round($data, 2) }}</td>
+                                                    @if ($data == 0)
+                                                        <td class="table-warning">{{ round($data, 2) }}</td>
+                                                    @else
+                                                        <td class="table-success">{{ round($data, 2) }}</td>
+                                                    @endif
                                                 @endforeach
                                             </tr>
                                         @endforeach

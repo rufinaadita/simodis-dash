@@ -53,7 +53,7 @@
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 
                     @auth
-                        <li class="nav-item dropdown me-1">
+                        {{-- <li class="nav-item dropdown me-1">
                             <a class="nav-link active dropdown-toggle" href="#" data-bs-toggle="dropdown"
                                 aria-expanded="false">
                                 <i class='bi bi-envelope bi-sub fs-4 text-gray-600'></i>
@@ -76,7 +76,7 @@
                                 </li>
                                 <li><a class="dropdown-item">No notification available</a></li>
                             </ul>
-                        </li>
+                        </li> --}}
                         <div class="dropdown">
                             <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
                                 <div class="user-menu d-flex">
@@ -95,9 +95,12 @@
                                 <li>
                                     <h6 class="dropdown-header">Welcome, {{ auth()->user()->name }}!</h6>
                                 </li>
-                                <li><a class="dropdown-item" href="{{ url('/user/profile') }}"><i
-                                            class="icon-mid bi bi-person me-2"></i> My
-                                        Profile</a></li>
+                                {{-- <li>
+                                    <a class="dropdown-item" href="{{ url('/user/profile') }}">
+                                        <i class="icon-mid bi bi-person me-2"></i>
+                                        My Profile
+                                    </a>
+                                </li> --}}
                                 @if (auth()->user()->status == 'Administrator')
                                     <li><a class="dropdown-item" href="/dash"><i class="icon-mid bi bi-gear me-2"></i>
                                             Administrator</a></li>

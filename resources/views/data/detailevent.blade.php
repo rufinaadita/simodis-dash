@@ -40,9 +40,11 @@
                                         <button type="submit" class="btn btn-primary mr-5">
                                             IMPORT EXCEL
                                         </button>
+                                        {{-- <a href="#" class="btn btn-success"><i class="bi bi-file-earmark-arrow-down"></i>
+                                            Unduh Template Excel
+                                        </a> --}}
                                     </div>
                                 </form>
-
                             </div>
                         </div>
                     </div>
@@ -76,13 +78,59 @@
                     Datatable
                 </div>
 
+
                 <div class="card-body">
-                    <form action="{{ url('/truncate/detailevent') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn btn-danger mb-2"
-                            onclick="return confirm('Are you sure to truncate this table?')">Truncate Table</button>
-                    </form>
-                    {{-- <a href="" class="btn btn-danger mb-2">Truncate Table</a> --}}
+                    <div class="row">
+                        <div class="col-auto">
+                            <form action="{{ url('/truncate/detailevent') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-danger mb-2"
+                                    onclick="return confirm('Are you sure to truncate this table?')">Kosongkan
+                                    Tabel</button>
+                            </form>
+                        </div>
+                        <div class="col-2 px-0">
+                            {{-- info modal start --}}
+                            <!-- Button trigger for basic modal -->
+                            <a type="button" class="btn icon icon-left text-dark" data-bs-toggle="modal"
+                                data-bs-target="#infoModal">
+                                <i class="bi bi-question-circle"></i>
+                            </a>
+                            <!--Basic Modal -->
+                            <div class="modal hide fade" id="infoModal">
+                                <div class="modal-dialog modal-dialog-scrollable" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="myModalLabel1">Information Help</h5>
+                                            <button type="button" class="close rounded-pill" data-bs-dismiss="modal"
+                                                aria-label="Close">
+                                                <i data-feather="x"></i>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>
+                                                Tombol <i class="text-danger">Kosongkan Tabel</i> hanya di perlukan ketika
+                                                data
+                                                yang
+                                                diinputkan memiliki kemungkinan terjadinya duplikasi atau data sudah pernah
+                                                diupload
+                                                sebelumnya.
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary ml-1" data-bs-dismiss="modal">
+                                                <i class="bx bx-check d-block d-sm-none"></i>
+                                                <span class="d-none d-sm-block">Get it!</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- info modal end --}}
+                        </div>
+                    </div>
+
+
                     <table class="table table-striped" id="table1">
                         <thead>
                             <tr>
@@ -139,4 +187,5 @@
         </section>
         {{-- datatable detail event end --}}
     </div>
+
 @endsection

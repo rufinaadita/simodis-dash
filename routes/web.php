@@ -57,6 +57,7 @@ Route::match(['get', 'post'], '/dash',  [DetaileventController::class, 'index'])
 Route::prefix('/main')->group(function () {
     Route::match(['get', 'post'], '/realisasi',  [DetaileventController::class, 'chartHarian']);
     Route::match(['get', 'post'], '/rank',  [DetaileventController::class, 'showRank']);
+    Route::match(['get', 'post'], '/kehandalan',  [KehandalanController::class, 'index']);
     Route::get('/rank/all',  [DetaileventController::class, 'delFilter']);
 });
 

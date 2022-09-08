@@ -92,8 +92,8 @@
                                     <th>id</th>
                                     <th>Nama ULP</th>
                                     <th>Jumlah Pelanggan</th>
-                                    <th>Target 1</th>
-                                    <th>Target 2</th>
+                                    <th>Target SAIDI</th>
+                                    <th>Target SAIFI</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>

@@ -9,6 +9,8 @@
     $saidi = $harian['saidi_harian'];
     $saifi = $harian['saifi_harian'];
 
+    setlocale(LC_ALL, 'id_ID');
+
     @endphp
 
     <div class="page-heading">
@@ -46,7 +48,11 @@
                                                 <select class="form-select" name="bulan" required>
                                                     <option disabled="disabled" selected>Pilih</option>
                                                     @for ($i = 1; $i <= 12; $i++)
-                                                        <option value="{{ $i }}">{{ $i }}
+                                                        @php
+                                                            $month_num = $i;
+                                                            $month_name = date('F', mktime(0, 0, 0, $month_num, 10));
+                                                        @endphp
+                                                        <option value="{{ $i }}">{{ $month_name }}
                                                         </option>
                                                     @endfor
                                                 </select>

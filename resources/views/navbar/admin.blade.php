@@ -27,6 +27,8 @@
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 
+
+
 </head>
 
 <script>
@@ -170,7 +172,6 @@
     </script>
     <script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script>
-
 
 </body>
 
